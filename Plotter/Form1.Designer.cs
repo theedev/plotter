@@ -46,6 +46,8 @@
             this.previewEdgeAndFillingMapsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.printingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.printOutlinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.manualControlModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.connectToPlotterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DiameterMain = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -55,8 +57,6 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.manualControlModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.connectToPlotterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DiameterMain)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DiameterDecimal)).BeginInit();
@@ -120,7 +120,7 @@
             // colourListToolStripMenuItem
             // 
             this.colourListToolStripMenuItem.Name = "colourListToolStripMenuItem";
-            this.colourListToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.colourListToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.colourListToolStripMenuItem.Text = "Colour List";
             this.colourListToolStripMenuItem.Click += new System.EventHandler(this.colourListToolStripMenuItem_Click);
             // 
@@ -202,6 +202,20 @@
             this.printOutlinesToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.printOutlinesToolStripMenuItem.Text = "Print Image";
             this.printOutlinesToolStripMenuItem.Click += new System.EventHandler(this.printOutlinesToolStripMenuItem_Click);
+            // 
+            // manualControlModeToolStripMenuItem
+            // 
+            this.manualControlModeToolStripMenuItem.Name = "manualControlModeToolStripMenuItem";
+            this.manualControlModeToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.manualControlModeToolStripMenuItem.Text = "Manual Control Mode";
+            this.manualControlModeToolStripMenuItem.Click += new System.EventHandler(this.manualControlModeToolStripMenuItem_Click_1);
+            // 
+            // connectToPlotterToolStripMenuItem
+            // 
+            this.connectToPlotterToolStripMenuItem.Name = "connectToPlotterToolStripMenuItem";
+            this.connectToPlotterToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.connectToPlotterToolStripMenuItem.Text = "Connect To Plotter";
+            this.connectToPlotterToolStripMenuItem.Click += new System.EventHandler(this.connectToPlotterToolStripMenuItem_Click_1);
             // 
             // helpToolStripMenuItem
             // 
@@ -299,20 +313,6 @@
             this.timer1.Interval = 40;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // manualControlModeToolStripMenuItem
-            // 
-            this.manualControlModeToolStripMenuItem.Name = "manualControlModeToolStripMenuItem";
-            this.manualControlModeToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.manualControlModeToolStripMenuItem.Text = "Manual Control Mode";
-            this.manualControlModeToolStripMenuItem.Click += new System.EventHandler(this.manualControlModeToolStripMenuItem_Click_1);
-            // 
-            // connectToPlotterToolStripMenuItem
-            // 
-            this.connectToPlotterToolStripMenuItem.Name = "connectToPlotterToolStripMenuItem";
-            this.connectToPlotterToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.connectToPlotterToolStripMenuItem.Text = "Connect To Plotter";
-            this.connectToPlotterToolStripMenuItem.Click += new System.EventHandler(this.connectToPlotterToolStripMenuItem_Click_1);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -351,13 +351,10 @@
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colourListToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.NumericUpDown DiameterMain;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown DiameterDecimal;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ToolStripMenuItem imagePreparationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ditherToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem previewToolStripMenuItem;
@@ -370,6 +367,9 @@
         private System.Windows.Forms.ToolStripMenuItem previewEdgeAndFillingMapsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem manualControlModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem connectToPlotterToolStripMenuItem;
+        internal System.Windows.Forms.NumericUpDown DiameterMain;
+        internal System.Windows.Forms.NumericUpDown DiameterDecimal;
+        internal System.Windows.Forms.Timer timer1;
     }
 }
 

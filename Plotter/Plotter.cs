@@ -6,10 +6,154 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Ports;
+using System.Windows.Forms;
 
 public static class plotter
 {
+    //TODO protect the variables
+    public const string ComPort = "COM3";
+    public const int ComRate = 9600;
+    internal static SerialPort SP = new SerialPort(ComPort, ComRate);
+
+    //booleans to check what's going on
+    internal static bool Dithered = false;
+    internal static bool SettingNumerics = false;
+
+    // add a dictionary that has a name and colour
+    public static Dictionary<String, Color> Colours = new Dictionary<String, Color>();
+    public static Dictionary<Color, String> Coloursinv = new Dictionary<Color, String>();
+
+    //a list to compare colours
+    internal static List<Color> compcol = new List<Color>();
+
+    //the diameter of an ink dot
+    internal static float Diameter = 0f;
+
+    //an array of colour maps
+    internal static Bitmap[] ColourMaps;
+    //an array of pattern maps
+    internal static Bitmap[,] PatternMaps;
+
     static List<Coordinate> IgnoredPixels;
+
+    internal static List<List<Coordinate>>[] OutlineSequences;
+    internal static List<List<Coordinate>>[] FillingSequences;
+
+    static int currentH = 0;
+    static int currentI = 0;
+    static int currentJ = 0;
+    static bool PrintingFilling = false;
+
+    internal static bool PlotterAvailable = false;
+    internal static string PlotterName = "Plotter Not Connected";
+    internal static int PsizeX = 0;
+    internal static int PsizeY = 0;
+    internal static int DownAngle = 0;
+
+    internal static int PatternProgressCount;
+
+
+    internal static void Loader(String Filename)
+    {
+        //Access the file
+        string line;
+        StreamReader file = null;
+        if (File.Exists(Filename))
+        {
+            file = new StreamReader(Filename);
+            //Loop load all the data (colours for now) into the dictionary
+            while ((line = file.ReadLine()) != null)
+            {
+                if (line.Equals("#Colours"))
+                {
+                    Colours.Clear();
+                    line = file.ReadLine();
+                    while (!line.Equals("!;"))
+                    {
+                        String[] colourPrep = line.Split(':');
+                        Color ColourTemp = Color.FromArgb(Int32.Parse(colourPrep[1]), Int32.Parse(colourPrep[2]), Int32.Parse(colourPrep[3]));
+                        Colours.Add(colourPrep[0], ColourTemp);
+                        line = file.ReadLine();
+                    }
+                }
+                if (line.Equals("#Diameter"))
+                {
+                    line = file.ReadLine();
+                    Diameter = float.Parse(line);
+                    line = file.ReadLine();
+                }
+
+            }
+            file.Close();
+        }
+
+        else
+        {
+            CreateNewConfig(Filename);
+            Loader(Filename);
+        }
+
+    }
+
+    internal static void Saver(String Filename)
+    {
+        StreamWriter file = new StreamWriter(Filename);
+        //looping colours
+        file.WriteLine("#Colours");
+        foreach (KeyValuePair<String, Color> colour in Colours)
+        {
+            file.WriteLine(colour.Key + ":" + colour.Value.R + ":" + colour.Value.G + ":" + colour.Value.B);
+        }
+        file.WriteLine("!;");
+        file.WriteLine("#Diameter");
+        file.Write(Diameter);
+        if (Diameter.ToString().Split('.').Length > 1)
+        {
+            file.WriteLine("0");
+        }
+        else
+        {
+            file.WriteLine(".0");
+        }
+        file.WriteLine("!;");
+        file.Close();
+    }
+
+    internal static void ReloadCols()
+    {
+        compcol.Clear();
+        foreach (KeyValuePair<String, Color> colour in Colours)
+        {
+            compcol.Add(colour.Value);
+        }
+        compcol.Add(Color.FromArgb(255, 255, 255));
+        Coloursinv.Clear();
+        foreach (KeyValuePair<String, Color> colToInv in Colours)
+        {
+            Coloursinv.Add(colToInv.Value, colToInv.Key);
+        }
+    }
+
+    internal static void CreateNewConfig(string Filename)
+    {
+        StreamWriter file = new StreamWriter(Filename);
+        file.WriteLine("#Colours");
+        file.WriteLine("!;");
+        file.WriteLine("#Diameter");
+        file.WriteLine("0.00");
+        file.WriteLine("!;");
+        file.Close();
+    }
+
+    internal static float ChangeDiameter(decimal main, decimal deci)
+    {
+        float NewDiameter = 0f;
+        NewDiameter += (float)main;
+        NewDiameter += (float)deci / 100f;
+        return NewDiameter;
+    }
+
+    
 
 
     internal static Bitmap dither(Bitmap src1, int width, int height, List<Color> Compcol)
@@ -85,7 +229,7 @@ public static class plotter
         return diffBM;
     }
 
-    internal static Bitmap[] GenerateColourMaps(Bitmap pic, List<Color> cols, Form1 frm1)
+    internal static Bitmap[] GenerateColourMaps(Bitmap pic, List<Color> cols)
     {
         Bitmap[] CMaps = new Bitmap[cols.Count];
         FormLoadingcs frmldgn = new FormLoadingcs();
@@ -93,10 +237,10 @@ public static class plotter
         for (int i = 0; i < CMaps.Length; i++)
         {
 
-            if (i < frm1.compcol.Count - 1)
-                frmldgn.Text = "Generating - " + frm1.Coloursinv[frm1.compcol[i]] + " (" + (i + 1) + "/" + frm1.compcol.Count + ")";
+            if (i < compcol.Count - 1)
+                frmldgn.Text = "Generating - " + Coloursinv[compcol[i]] + " (" + (i + 1) + "/" + compcol.Count + ")";
             else
-                frmldgn.Text = "Generating - White" + " (" + (i + 1) + "/" + frm1.compcol.Count + ")";
+                frmldgn.Text = "Generating - White" + " (" + (i + 1) + "/" + compcol.Count + ")";
 
             frmldgn.Show();
 
@@ -108,12 +252,12 @@ public static class plotter
                 for (int x = 0; x < pic.Width; x++)
                 {
                     Color col1 = pic.GetPixel(x, y);
-                    if (col1 == frm1.compcol[i])
+                    if (col1 == compcol[i])
                         colpic.SetPixel(x, y, Color.FromArgb(0, 0, 0));
                     else
                         colpic.SetPixel(x, y, Color.FromArgb(255, 255, 255));
                 }
-                frmldgn.setProgress((int)(((float)count / (float)pic.Height * 100f) / frm1.compcol.Count));
+                frmldgn.setProgress((int)(((float)count / (float)pic.Height * 100f) / compcol.Count));
             }
             CMaps[i] = colpic;
 
@@ -122,13 +266,13 @@ public static class plotter
         return CMaps;
     }
 
-    internal static Bitmap[,] GeneratePatternMaps(Bitmap[] ColMaps, Form1 frm1)
+    internal static Bitmap[,] GeneratePatternMaps(Bitmap[] ColMaps)
     {
         //create a 2 dimensional array
         Bitmap[,] Patterns = new Bitmap[ColMaps.Length - 1, 2];
         //take colour image
         FormLoadingcs frmldgn = new FormLoadingcs();
-        frm1.PatternProgressCount = -1;
+        PatternProgressCount = -1;
         frmldgn.Show();
         int counter = 0;
         for (int i = 0; i < ColMaps.Length - 1; i++)
@@ -139,17 +283,17 @@ public static class plotter
             Bitmap Outline = new Bitmap(bmp.Width, bmp.Height, PixelFormat.Format24bppRgb);
             Bitmap Filling = new Bitmap(bmp.Width, bmp.Height, PixelFormat.Format24bppRgb);
 
-            if (i < frm1.compcol.Count - 1)
-                frmldgn.Text = "Generating Outline - " + frm1.Coloursinv[frm1.compcol[i]] + " (" + (counter) + "/" + ((frm1.compcol.Count - 1) * 2) + ")";
+            if (i < compcol.Count - 1)
+                frmldgn.Text = "Generating Outline - " + Coloursinv[compcol[i]] + " (" + (counter) + "/" + ((compcol.Count - 1) * 2) + ")";
 
             //call an outlining method on the first bitmap, specify colour
-            Outline = FindOutline(Color.FromArgb(255, 0, 0), bmp, frmldgn, frm1);
+            Outline = FindOutline(Color.FromArgb(255, 0, 0), bmp, frmldgn);
             //call a filling method on the second bitmap, specify colour
             counter++;
-            if (i < frm1.compcol.Count - 1)
-                frmldgn.Text = "Generating Filling - " + frm1.Coloursinv[frm1.compcol[i]] + " (" + (counter) + "/" + ((frm1.compcol.Count - 1) * 2) + ")";
+            if (i < compcol.Count - 1)
+                frmldgn.Text = "Generating Filling - " + Coloursinv[compcol[i]] + " (" + (counter) + "/" + ((compcol.Count - 1) * 2) + ")";
 
-            Filling = FindFilling(Color.FromArgb(0, 255, 0), Outline, bmp, frmldgn, frm1);
+            Filling = FindFilling(Color.FromArgb(0, 255, 0), Outline, bmp, frmldgn);
             //add the 2 bitmaps to the Array
             Patterns[i, 0] = Outline;
             Patterns[i, 1] = Filling;
@@ -158,14 +302,14 @@ public static class plotter
         return Patterns;
     }
 
-    internal static Bitmap FindOutline(Color colour, Bitmap MaptoCheck, FormLoadingcs frmldgn, Form1 frm1)
+    internal static Bitmap FindOutline(Color colour, Bitmap MaptoCheck, FormLoadingcs frmldgn)
     {
         //create a list of coordinates to ignore
         Bitmap linmap = new Bitmap(MaptoCheck.Width, MaptoCheck.Height, PixelFormat.Format24bppRgb);
         //loop though colour map
         for (int y = 0; y < MaptoCheck.Height; y++)
         {
-            frm1.PatternProgressCount++;
+            PatternProgressCount++;
             for (int x = 0; x < MaptoCheck.Width; x++)
             {
                 Coordinate pixel = new Coordinate(x, y);
@@ -175,7 +319,7 @@ public static class plotter
                     CheckPixel(pixel, colour, MaptoCheck, linmap);
                 }
             }
-            frmldgn.setProgress((int)(((float)frm1.PatternProgressCount / (float)MaptoCheck.Height * 100f) / (float)((frm1.compcol.Count - 1) * 2)));
+            frmldgn.setProgress((int)(((float)PatternProgressCount / (float)MaptoCheck.Height * 100f) / (float)((compcol.Count - 1) * 2)));
         }
         return linmap;
     }
@@ -204,12 +348,12 @@ public static class plotter
         }
     }
 
-    internal static Bitmap FindFilling(Color colour, Bitmap OutlineMap, Bitmap MapToFill, FormLoadingcs frmldgn, Form1 frm1)
+    internal static Bitmap FindFilling(Color colour, Bitmap OutlineMap, Bitmap MapToFill, FormLoadingcs frmldgn)
     {
         Bitmap FillingMap = new Bitmap(OutlineMap.Width, OutlineMap.Height, PixelFormat.Format24bppRgb);
         for (int y = 0; y < OutlineMap.Height; y++)
         {
-            frm1.PatternProgressCount++;
+            PatternProgressCount++;
             for (int x = 0; x < OutlineMap.Width; x++)
             {
                 if (MapToFill.GetPixel(x, y) == Color.FromArgb(0, 0, 0))
@@ -220,7 +364,7 @@ public static class plotter
                     }
                 }
             }
-            frmldgn.setProgress((int)(((float)frm1.PatternProgressCount / (float)MapToFill.Height * 100f) / (float)((frm1.compcol.Count - 1) * 2)));
+            frmldgn.setProgress((int)(((float)PatternProgressCount / (float)MapToFill.Height * 100f) / (float)((compcol.Count - 1) * 2)));
         }
         return FillingMap;
     }
@@ -316,6 +460,96 @@ public static class plotter
 
     }
 
+    internal static void SendPrintingInfo(Form1 frm1)
+    {
+
+        if (!PrintingFilling)
+        {
+            uint X = (uint)OutlineSequences[currentH][currentI][currentJ].X();
+            uint Y = (uint)OutlineSequences[currentH][currentI][currentJ].Y();
+            char[] bytes = new char[4];
+            bytes[3] = (char)((Y >> 8) & 0xFF);
+            bytes[2] = (char)(Y & 0xFF);
+            bytes[1] = (char)((X >> 8) & 0xFF);
+            bytes[0] = (char)(X & 0xFF);
+
+
+            string BytesCombined = new string(bytes);
+
+            SP.Write(BytesCombined);
+
+            currentJ++;
+
+            if (currentJ >= OutlineSequences[currentH][currentI].Count)
+            {
+                currentJ = 0;
+                currentI++;
+
+            }
+            if (currentI >= OutlineSequences[currentH].Count)
+            {
+                frm1.timer1.Enabled = false;
+                currentH++;
+                PrintingFilling = true;
+                currentH--;
+                currentI = 0;
+                currentJ = 0;
+                frm1.timer1.Enabled = true;
+            }
+        }
+        else
+        {
+            uint X = (uint)FillingSequences[currentH][currentI][currentJ].X();
+            uint Y = (uint)FillingSequences[currentH][currentI][currentJ].Y();
+
+
+            char[] bytes = new char[4];
+            bytes[3] = (char)((Y >> 8) & 0xFF);
+            bytes[2] = (char)(Y & 0xFF);
+            bytes[1] = (char)((X >> 8) & 0xFF);
+            bytes[0] = (char)(X & 0xFF);
+
+
+            string BytesCombined = new string(bytes);
+
+            SP.Write(BytesCombined);
+
+            currentJ++;
+
+            if (currentJ >= FillingSequences[currentH][currentI].Count)
+            {
+                currentJ = 0;
+                currentI++;
+
+            }
+            if (currentI >= FillingSequences[currentH].Count)
+            {
+                frm1.timer1.Enabled = false;
+                currentH++;
+                if (currentH >= FillingSequences.Length && PrintingFilling)
+                {
+                    currentH = 0;
+                    currentI = 0;
+                    currentJ = 0;
+                    frm1.timer1.Enabled = false;
+                    SP.Close();
+                    MessageBox.Show("The printing proccess is done.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    DialogResult dlgr = MessageBox.Show("Insert pen with colour " + plotter.Coloursinv[plotter.compcol[currentH]], "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (dlgr == DialogResult.OK)
+                    {
+                        currentI = 0;
+                        currentJ = 0;
+                        PrintingFilling = false;
+                        frm1.timer1.Enabled = true;
+                    }
+                }
+            }
+        }
+    }
+
     internal static List<List<Coordinate>>[] GenerateFillingSequences(Bitmap[,] patternMaps)
     {
         List<List<Coordinate>>[] FillingSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length / 2)];
@@ -398,6 +632,64 @@ public static class plotter
                     FindOutlineSequence(newPixel, bitmap, sequence);
                 }
         }
+    }
+
+    internal static void Handshake()
+    {
+        PlotterAvailable = false;
+        String[] HSI = new String[4];
+        String HandshakeInfo;
+        if (OpenPort())
+        {
+            //Send a handshake request
+
+            SP.Write("OK;");
+            HandshakeInfo = SP.ReadLine();
+            if (HandshakeInfo == "OKAYYYYYYY\r")
+                PlotterAvailable = true;
+            if (PlotterAvailable)
+            {
+                //Request a plotter's name
+                SP.Write("RName;");
+                HandshakeInfo = SP.ReadLine();
+                HSI[0] = HandshakeInfo;
+                //Request a plotter's working area dimentions
+                SP.Write("RSizeX;");
+                HandshakeInfo = SP.ReadLine();
+                HSI[1] = HandshakeInfo;
+                SP.Write("RSizeY;");
+                HandshakeInfo = SP.ReadLine();
+                HSI[2] = HandshakeInfo;
+                //Request the angle at which the pen touches the paper or floor
+                SP.Write("RDownAngle;");
+                HandshakeInfo = SP.ReadLine();
+                HSI[3] = HandshakeInfo;
+
+                //dumping all the info from the string
+                PlotterName = HSI[0];
+                PsizeX = Int32.Parse(HSI[1]);
+                PsizeY = Int32.Parse(HSI[2]);
+                DownAngle = Int32.Parse(HSI[3]);
+            }
+
+
+            SP.Close();
+        }
+    }
+
+    internal static bool OpenPort()
+    {
+        try
+        {
+            SP.Open();
+        }
+        catch
+        {
+            MessageBox.Show("Device not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return false;
+        }
+        return true;
+
     }
 
 }
