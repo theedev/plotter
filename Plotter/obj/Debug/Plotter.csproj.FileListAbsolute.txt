@@ -24,4 +24,3 @@ D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.csproj.CoreC
 D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.exe
 D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.pdb
 D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.FormManualControl.resources
-D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.csprojResolveAssemblyReference.cache
