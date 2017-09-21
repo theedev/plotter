@@ -23,7 +23,6 @@ namespace Plotter
         private void FormColour_Load(object sender, EventArgs e)
         {
             LoadList();
-            
         }
 
         private void LoadList()
@@ -57,6 +56,7 @@ namespace Plotter
                     frm1.Colours.Add(textBox1.Text, dlg.Color);
                     LoadList();
                     frm1.Saver(ConfigFileName);
+                    frm1.Loader(ConfigFileName);
                     frm1.ReloadCols();
                 }
                 else
@@ -65,6 +65,7 @@ namespace Plotter
                     frm1.Colours.Add(textBox1.Text, dlg.Color);
                     LoadList();
                     frm1.Saver(ConfigFileName);
+                    frm1.Loader(ConfigFileName);
                     frm1.ReloadCols();
                 }
             }
@@ -75,6 +76,7 @@ namespace Plotter
             frm1.Colours.Remove(listBox1.SelectedItem.ToString());
             LoadList();
             frm1.Saver(ConfigFileName);
+            frm1.Loader(ConfigFileName);
             frm1.ReloadCols();
         }
     }

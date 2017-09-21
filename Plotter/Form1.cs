@@ -337,7 +337,7 @@ namespace Plotter
 
         
         //TODO reload dictionaries and other declarations
-        private void Loader(String Filename)
+        internal void Loader(String Filename)
         {
             //Access the file
             string line;
@@ -350,6 +350,7 @@ namespace Plotter
                 {
                     if (line.Equals("#Colours"))
                     {
+                        Colours.Clear();
                         line = file.ReadLine();
                         while (!line.Equals("!;"))
                         {
