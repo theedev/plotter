@@ -379,7 +379,7 @@ namespace Plotter
 
         }
 
-        public void Saver(String Filename)
+        internal void Saver(String Filename)
         {
             StreamWriter file = new StreamWriter(Filename);
             //looping colours
@@ -403,7 +403,7 @@ namespace Plotter
             file.Close();
         }
 
-        public void ReloadCols()
+        internal void ReloadCols()
         {
             compcol.Clear();
             foreach (KeyValuePair<String, Color> colour in Colours)
@@ -418,7 +418,7 @@ namespace Plotter
             }
         }
 
-        private void CreateNewConfig(string Filename)
+        internal void CreateNewConfig(string Filename)
         {
             StreamWriter file = new StreamWriter(Filename);
             file.WriteLine("#Colours");
@@ -429,7 +429,7 @@ namespace Plotter
             file.Close();
         }
 
-        float ChangeDiameter()
+        internal float ChangeDiameter()
         {
             float NewDiameter = 0f;
             NewDiameter += (float)DiameterMain.Value;
@@ -437,7 +437,7 @@ namespace Plotter
             return NewDiameter;
         }
 
-        private void SetNumerics()
+        internal void SetNumerics()
         {
             string[] splitfloat = new string[2];
             SettingNumerics = true;
@@ -464,7 +464,7 @@ namespace Plotter
 
 
 
-        private Bitmap[,] GeneratePatternMaps(Bitmap[] ColMaps)
+        internal Bitmap[,] GeneratePatternMaps(Bitmap[] ColMaps)
         {
             //create a 2 dimensional array
             Bitmap[,] Patterns = new Bitmap[ColMaps.Length-1, 2];
@@ -500,7 +500,7 @@ namespace Plotter
             return Patterns;
         }
 
-        private Bitmap FindOutline(Color colour, Bitmap MaptoCheck, FormLoadingcs frmldgn)
+        internal Bitmap FindOutline(Color colour, Bitmap MaptoCheck, FormLoadingcs frmldgn)
         {
             //create a list of coordinates to ignore
             Bitmap linmap = new Bitmap(MaptoCheck.Width, MaptoCheck.Height, PixelFormat.Format24bppRgb);
@@ -522,31 +522,31 @@ namespace Plotter
             return linmap;
         }
 
-        private void CheckPixel(Coordinate pixel, Color colour, Bitmap MapTC, Bitmap MapTA)
+        internal void CheckPixel(Coordinate pixel, Color colour, Bitmap MapTC, Bitmap MapTA)
         {
             Coordinate[] SurroundersDirect =
            {
-                new Coordinate(pixel.GetX()-1,pixel.GetY()),
-                new Coordinate(pixel.GetX()+1,pixel.GetY()),
-                new Coordinate(pixel.GetX(),pixel.GetY()-1),
-                new Coordinate(pixel.GetX(),pixel.GetY()+1),
+                new Coordinate(pixel.X()-1,pixel.Y()),
+                new Coordinate(pixel.X()+1,pixel.Y()),
+                new Coordinate(pixel.X(),pixel.Y()-1),
+                new Coordinate(pixel.X(),pixel.Y()+1),
             };
             //check the 4 direct pixels surrounding the pixel(up down left right)
             foreach (Coordinate coord in SurroundersDirect)
             {
 
                 //if any of them is white then turn the pixel red and keep checking
-                if (coord.GetX() > 0 && coord.GetX() < MapTC.Width && coord.GetY() > 0 && coord.GetY() < MapTC.Height)
+                if (coord.X() > 0 && coord.X() < MapTC.Width && coord.Y() > 0 && coord.Y() < MapTC.Height)
                 {
-                    if (MapTC.GetPixel(coord.GetX(), coord.GetY()) == Color.FromArgb(255, 255, 255))
+                    if (MapTC.GetPixel(coord.X(), coord.Y()) == Color.FromArgb(255, 255, 255))
                     {
-                        MapTA.SetPixel(pixel.GetX(), pixel.GetY(), Color.FromArgb(255, 0, 0));
+                        MapTA.SetPixel(pixel.X(), pixel.Y(), Color.FromArgb(255, 0, 0));
                     }
                 }
             }
         }
 
-        private Bitmap FindFilling(Color colour, Bitmap OutlineMap, Bitmap MapToFill, FormLoadingcs frmldgn)
+        internal Bitmap FindFilling(Color colour, Bitmap OutlineMap, Bitmap MapToFill, FormLoadingcs frmldgn)
         {
             Bitmap FillingMap = new Bitmap(OutlineMap.Width, OutlineMap.Height, PixelFormat.Format24bppRgb);
             for (int y = 0; y < OutlineMap.Height; y++)
@@ -567,7 +567,7 @@ namespace Plotter
             return FillingMap;
         }
 
-        private List<List<Coordinate>>[] GenerateOutlineSequences(Bitmap[,] patternMaps)
+        internal List<List<Coordinate>>[] GenerateOutlineSequences(Bitmap[,] patternMaps)
         {
             List<List<Coordinate>>[] OutlineSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length/2)];
             //loop over colour outlines
@@ -581,7 +581,7 @@ namespace Plotter
             return OutlineSequenceImageList;
         }
 
-        private List<List<Coordinate>> GenerateOutlineSequenceList(Bitmap bitmap)
+        internal List<List<Coordinate>> GenerateOutlineSequenceList(Bitmap bitmap)
         {
             IgnoredPixels = new List<Coordinate>();
             int Width = bitmap.Width;
@@ -618,7 +618,7 @@ namespace Plotter
             return SL;
         }
 
-        private void FindOutlineSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence)
+        internal void FindOutlineSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence)
         {
             bool Ignored = false;
 
@@ -636,21 +636,21 @@ namespace Plotter
 
             Coordinate[] SurroundingPixels =
             {
-                new Coordinate(pixel.GetX()-1, pixel.GetY()),
-                new Coordinate(pixel.GetX()+1, pixel.GetY()),
-                new Coordinate(pixel.GetX(), pixel.GetY()-1),
-                new Coordinate(pixel.GetX(), pixel.GetY()+1),
-                new Coordinate(pixel.GetX()-1, pixel.GetY()-1),
-                new Coordinate(pixel.GetX()+1, pixel.GetY()+1),
-                new Coordinate(pixel.GetX()-1, pixel.GetY()+1),
-                new Coordinate(pixel.GetX()+1, pixel.GetY()-1),
+                new Coordinate(pixel.X()-1, pixel.Y()),
+                new Coordinate(pixel.X()+1, pixel.Y()),
+                new Coordinate(pixel.X(), pixel.Y()-1),
+                new Coordinate(pixel.X(), pixel.Y()+1),
+                new Coordinate(pixel.X()-1, pixel.Y()-1),
+                new Coordinate(pixel.X()+1, pixel.Y()+1),
+                new Coordinate(pixel.X()-1, pixel.Y()+1),
+                new Coordinate(pixel.X()+1, pixel.Y()-1),
             };
             //check the surrounding pixels of a pixel
             foreach (Coordinate newPixel in SurroundingPixels)
             {
                 //if any of them is red
-                if (newPixel.GetX() >= 0 && newPixel.GetX() <= bitmap.Width && newPixel.GetY() >= 0 && newPixel.GetY() <= bitmap.Height)
-                    if (bitmap.GetPixel(newPixel.GetX(),newPixel.GetY()) == Color.FromArgb(255,0,0))
+                if (newPixel.X() >= 0 && newPixel.X() <= bitmap.Width && newPixel.Y() >= 0 && newPixel.Y() <= bitmap.Height)
+                    if (bitmap.GetPixel(newPixel.X(),newPixel.Y()) == Color.FromArgb(255,0,0))
                 {
                     FindOutlineSequence(newPixel, bitmap, sequence);  
                 }
@@ -658,7 +658,7 @@ namespace Plotter
            
         }
 
-        private List<List<Coordinate>>[] GenerateFillingSequences(Bitmap[,] patternMaps)
+        internal List<List<Coordinate>>[] GenerateFillingSequences(Bitmap[,] patternMaps)
         {
             List<List<Coordinate>>[] FillingSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length / 2)];
             //loop over colour outlines
@@ -672,7 +672,7 @@ namespace Plotter
             return FillingSequenceImageList;
         }
 
-        private List<List<Coordinate>> GenerateFillingSequenceList(Bitmap bitmap)
+        internal List<List<Coordinate>> GenerateFillingSequenceList(Bitmap bitmap)
         {
             IgnoredPixels = new List<Coordinate>();
             int Width = bitmap.Width;
@@ -709,7 +709,7 @@ namespace Plotter
             return SL;
         }
 
-        private void FindFillingSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence)
+        internal void FindFillingSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence)
         {
 
             bool Ignored = false;
@@ -728,21 +728,21 @@ namespace Plotter
 
             Coordinate[] SurroundingPixels =
             {
-                new Coordinate(pixel.GetX()+1, pixel.GetY()),
+                new Coordinate(pixel.X()+1, pixel.Y()),
             };
             //check the surrounding pixels of a pixel
             foreach (Coordinate newPixel in SurroundingPixels)
             {
                 //if any of them is red
-                if (pixel.GetX()-1 >= 0)
-                    if (bitmap.GetPixel(newPixel.GetX(), newPixel.GetY()) == Color.FromArgb(0, 255, 0))
+                if (pixel.X()-1 >= 0)
+                    if (bitmap.GetPixel(newPixel.X(), newPixel.Y()) == Color.FromArgb(0, 255, 0))
                     {
                         FindOutlineSequence(newPixel, bitmap, sequence);
                     }
             }
         }
 
-        private void Handshake()
+        internal void Handshake()
         {
             PlotterAvailable = false;
             String[] HSI = new String[4];
@@ -805,8 +805,8 @@ namespace Plotter
 
             if (!PrintingFilling)
             {
-                uint X = (uint)OutlineSequences[currentH][currentI][currentJ].GetX();
-                uint Y = (uint)OutlineSequences[currentH][currentI][currentJ].GetY();
+                uint X = (uint)OutlineSequences[currentH][currentI][currentJ].X();
+                uint Y = (uint)OutlineSequences[currentH][currentI][currentJ].Y();
                 char[] bytes = new char[4];
                 bytes[3] = (char)((Y >> 8) & 0xFF);
                 bytes[2] = (char)(Y & 0xFF);
@@ -839,8 +839,8 @@ namespace Plotter
             }
             else
             {
-                uint X = (uint)FillingSequences[currentH][currentI][currentJ].GetX();
-                uint Y = (uint)FillingSequences[currentH][currentI][currentJ].GetY();
+                uint X = (uint)FillingSequences[currentH][currentI][currentJ].X();
+                uint Y = (uint)FillingSequences[currentH][currentI][currentJ].Y();
 
 
                 char[] bytes = new char[4];
@@ -907,8 +907,8 @@ namespace Plotter
                         for (int j = 0; j < Sequences[0][i].Count; j++)
                         {
                             char[] bytes = new char[4];
-                            int X = Sequences[0][i][j].GetX();
-                            int Y = Sequences[0][i][j].GetY();
+                            int X = Sequences[0][i][j].X();
+                            int Y = Sequences[0][i][j].Y();
 
                             bytes[3] = (char)((Y >> 8) & 0xFF);
                             bytes[2] = (char)(Y & 0xFF);
@@ -919,8 +919,8 @@ namespace Plotter
 
                             SP.Write(k);
 
-                            //SP.Write(Sequences[0][i][j].GetX() + "," + Sequences[0][i][j].GetY() + ";");
-                            //textBox1.Text += Sequences[0][i][j].GetX() + "," + Sequences[0][i][j].GetY() + ";";
+                            //SP.Write(Sequences[0][i][j].X() + "," + Sequences[0][i][j].Y() + ";");
+                            //textBox1.Text += Sequences[0][i][j].X() + "," + Sequences[0][i][j].Y() + ";";
                         }
                     }
                 }

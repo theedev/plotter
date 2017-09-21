@@ -11,33 +11,37 @@ namespace Plotter
         //a custom class that holds the x and y coordinates of a pixel, useful for lists of pixels
         //lists of pixels can be used in searching to ignore certain pixels to speed up the searching process
         //or can be useful in sending or saving serialized data
-        private int X;
-        private int Y;
-        public Coordinate() { X = 0; Y = 0; }
-        public Coordinate(int x, int y)
+        private int x;
+        private int y;
+        public Coordinate() { x = 0; y = 0; }
+        public Coordinate(int xx, int yy)
         {
-            X = x;
-            Y = y;
+            x = xx;
+            y = yy;
         }
-        public int GetX()
+        public int X()
         {
-            return X;
-        }
-
-        public int GetY()
-        {
-            return Y;
+            return x;
         }
 
-        public void Set(int x, int y)
+        public int Y()
         {
-            X = x;
-            Y = y;
+            return y;
+        }
+
+        public void X(int xx)
+        {
+            x = xx;
+        }
+
+        public void Y(int yy)
+        {
+            y = yy;
         }
 
         public bool Compare (Coordinate pixelToCompare)
         {
-            if (pixelToCompare.GetX() == this.X && pixelToCompare.GetY() == this.Y)
+            if (pixelToCompare.X() == this.x && pixelToCompare.Y() == this.y)
             {
                 return true;
             }
