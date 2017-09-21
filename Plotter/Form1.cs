@@ -30,7 +30,7 @@ namespace Plotter
         public Dictionary<Color, String> Coloursinv = new Dictionary<Color, String>();
 
         //a list to compare colours
-        List<Color> compcol = new List<Color>();
+        internal List<Color> compcol = new List<Color>();
 
         //booleans to check what's going on
         bool Dithered = false;
@@ -171,7 +171,7 @@ namespace Plotter
         {
             if (Dithered)
             {
-                ColourMaps = GenerateColourMaps((Bitmap)pictureBox1.Image, compcol);
+                ColourMaps = plotter.GenerateColourMaps((Bitmap)pictureBox1.Image, compcol, this);
             }
             else
                 MessageBox.Show("Picture not dithered", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -413,42 +413,7 @@ namespace Plotter
             }
         }
 
-        private Bitmap[] GenerateColourMaps(Bitmap pic, List<Color> cols)
-        {
-            Bitmap[] CMaps = new Bitmap[cols.Count];
-            FormLoadingcs frmldgn = new FormLoadingcs();
-            int count = -1;
-            for (int i = 0; i < CMaps.Length; i++)
-            {
-
-                if (i < compcol.Count - 1)
-                    frmldgn.Text = "Generating - " + Coloursinv[compcol[i]] + " (" + (i + 1) + "/" + compcol.Count + ")";
-                else
-                    frmldgn.Text = "Generating - White" + " (" + (i + 1) + "/" + compcol.Count + ")";
-
-                frmldgn.Show();
-
-                Bitmap colpic = new Bitmap(pic.Width, pic.Height, PixelFormat.Format24bppRgb);
-
-                for (int y = 0; y < pic.Height; y++)
-                {
-                    count++;
-                    for (int x = 0; x < pic.Width; x++)
-                    {
-                        Color col1 = pic.GetPixel(x, y);
-                        if (col1 == compcol[i])
-                            colpic.SetPixel(x, y, Color.FromArgb(0, 0, 0));
-                        else
-                            colpic.SetPixel(x, y, Color.FromArgb(255, 255, 255));
-                    }
-                    frmldgn.setProgress((int)(((float)count / (float)pic.Height * 100f) / compcol.Count));
-                }
-                CMaps[i] = colpic;
-
-            }
-            frmldgn.Close();
-            return CMaps;
-        }
+        
 
         float ChangeDiameter()
         {

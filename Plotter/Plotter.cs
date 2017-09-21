@@ -12,7 +12,7 @@ public static class plotter
 
 	
 
-    public static Bitmap dither(Bitmap src1, int width, int height, List<Color> Compcol)
+    internal static Bitmap dither(Bitmap src1, int width, int height, List<Color> Compcol)
     {
         Bitmap diffBM = new Bitmap(width, height, PixelFormat.Format24bppRgb);
         FormLoadingcs frmld = new FormLoadingcs();
@@ -83,6 +83,43 @@ public static class plotter
         }
         frmld.Close();
         return diffBM;
+    }
+
+    internal static Bitmap[] GenerateColourMaps(Bitmap pic, List<Color> cols, Form1 frm1)
+    {
+        Bitmap[] CMaps = new Bitmap[cols.Count];
+        FormLoadingcs frmldgn = new FormLoadingcs();
+        int count = -1;
+        for (int i = 0; i < CMaps.Length; i++)
+        {
+
+            if (i < frm1.compcol.Count - 1)
+                frmldgn.Text = "Generating - " + frm1.Coloursinv[frm1.compcol[i]] + " (" + (i + 1) + "/" + frm1.compcol.Count + ")";
+            else
+                frmldgn.Text = "Generating - White" + " (" + (i + 1) + "/" + frm1.compcol.Count + ")";
+
+            frmldgn.Show();
+
+            Bitmap colpic = new Bitmap(pic.Width, pic.Height, PixelFormat.Format24bppRgb);
+
+            for (int y = 0; y < pic.Height; y++)
+            {
+                count++;
+                for (int x = 0; x < pic.Width; x++)
+                {
+                    Color col1 = pic.GetPixel(x, y);
+                    if (col1 == frm1.compcol[i])
+                        colpic.SetPixel(x, y, Color.FromArgb(0, 0, 0));
+                    else
+                        colpic.SetPixel(x, y, Color.FromArgb(255, 255, 255));
+                }
+                frmldgn.setProgress((int)(((float)count / (float)pic.Height * 100f) / frm1.compcol.Count));
+            }
+            CMaps[i] = colpic;
+
+        }
+        frmldgn.Close();
+        return CMaps;
     }
 
 }
