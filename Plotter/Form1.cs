@@ -336,7 +336,6 @@ namespace Plotter
         //
 
         
-        //TODO reload dictionaries and other declarations
         internal void Loader(String Filename)
         {
             //Access the file
@@ -371,14 +370,12 @@ namespace Plotter
                 }
                 file.Close();
             }
-            //TODO if file doesn't exist then create it
+
             else
             {
                 CreateNewConfig(ConfigFileName);
                 Loader(ConfigFileName);
-                file.Close();
             }
-            file.Close();
 
         }
 
@@ -394,7 +391,14 @@ namespace Plotter
             file.WriteLine("!;");
             file.WriteLine("#Diameter");
             file.Write(Diameter);
-            file.WriteLine("0");
+            if (Diameter.ToString().Split('.').Length > 1)
+            {
+                file.WriteLine("0");
+            }
+            else
+            {
+                file.WriteLine(".0");
+            }
             file.WriteLine("!;");
             file.Close();
         }
@@ -414,16 +418,6 @@ namespace Plotter
             }
         }
 
-        
-
-        float ChangeDiameter()
-        {
-            float NewDiameter = 0f;
-            NewDiameter += (float)DiameterMain.Value;
-            NewDiameter += (float)DiameterDecimal.Value / 100f;
-            return NewDiameter;
-        }
-
         private void CreateNewConfig(string Filename)
         {
             StreamWriter file = new StreamWriter(Filename);
@@ -435,25 +429,40 @@ namespace Plotter
             file.Close();
         }
 
+        float ChangeDiameter()
+        {
+            float NewDiameter = 0f;
+            NewDiameter += (float)DiameterMain.Value;
+            NewDiameter += (float)DiameterDecimal.Value / 100f;
+            return NewDiameter;
+        }
+
         private void SetNumerics()
         {
             string[] splitfloat = new string[2];
             SettingNumerics = true;
             splitfloat = Diameter.ToString().Split('.');
             DiameterMain.Value = decimal.Parse(splitfloat[0]);
-            if (!splitfloat[1][0].Equals('0'))
+            if (splitfloat.Length > 1)
             {
-                if (float.Parse(splitfloat[1] + "0") < 100f)
+                if (!splitfloat[1][0].Equals('0'))
                 {
-                    DiameterDecimal.Value = decimal.Parse(splitfloat[1]) * 10;
+                    if (float.Parse(splitfloat[1] + "0") < 100f)
+                    {
+                        DiameterDecimal.Value = decimal.Parse(splitfloat[1]) * 10;
+                    }
+                    else
+                        DiameterDecimal.Value = decimal.Parse(splitfloat[1]);
                 }
                 else
                     DiameterDecimal.Value = decimal.Parse(splitfloat[1]);
             }
             else
-                DiameterDecimal.Value = decimal.Parse(splitfloat[1]);
+                DiameterDecimal.Value = 0;
             SettingNumerics = false;
         }
+
+
 
         private Bitmap[,] GeneratePatternMaps(Bitmap[] ColMaps)
         {
