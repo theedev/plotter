@@ -1,0 +1,27 @@
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\bin\Debug\Plotter.exe.config
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\bin\Debug\Plotter.exe
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\bin\Debug\Plotter.pdb
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\obj\Debug\Plotter.csprojResolveAssemblyReference.cache
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\obj\Debug\Plotter.Form1.resources
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\obj\Debug\Plotter.Properties.Resources.resources
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\obj\Debug\Plotter.csproj.GenerateResource.Cache
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\obj\Debug\Plotter.csproj.CoreCompileInputs.cache
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\obj\Debug\Plotter.exe
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\obj\Debug\Plotter.pdb
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\obj\Debug\Plotter.FormLoadingcs.resources
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\obj\Debug\Plotter.FormColour.resources
+C:\Users\Farook\Documents\Visual Studio 2017\Projects\Plotter\Plotter\obj\Debug\Plotter.FormColMap.resources
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\bin\Debug\Plotter.exe.config
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\bin\Debug\Plotter.exe
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\bin\Debug\Plotter.pdb
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.Form1.resources
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.FormColMap.resources
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.FormColour.resources
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.FormLoadingcs.resources
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.Properties.Resources.resources
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.csproj.GenerateResource.Cache
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.csproj.CoreCompileInputs.cache
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.exe
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.pdb
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.FormManualControl.resources
+D:\Library\Projects\Other\Plotter\Plotter\Plotter\obj\Debug\Plotter.csprojResolveAssemblyReference.cache
