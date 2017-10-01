@@ -23,7 +23,7 @@ namespace Plotter
             if (isUnknown)
             {
                 progressBar1.Style = ProgressBarStyle.Marquee;
-                progressBar1.MarqueeAnimationSpeed = 100;
+                progressBar1.MarqueeAnimationSpeed = 50;
             }
             else
             {

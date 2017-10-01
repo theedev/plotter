@@ -132,15 +132,39 @@ namespace Plotter
             else
                 MessageBox.Show("Colour maps not generated", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+        //in between void
+        void generateSeqOnthread()
+        {
+            
+            FormLoadingcs loader = new FormLoadingcs(true, "Generating Pattern Sequences");
+            loader.Show();
+                Thread generatorThread = new Thread(ActualGenerate,128*1024*1024);
+                generatorThread.Start();
+                while (generatorThread.ThreadState == ThreadState.Running)
+                {
+                    Application.DoEvents();
+                }
+                Thread.Sleep(1000);
+            loader.Close();
+        }
 
+        private void ActualGenerate()
+        {
+            plotter.OutlineSequences = new List<List<Coordinate>>[(plotter.PatternMaps.Length / 2) - 1];
+            plotter.OutlineSequences = plotter.GenerateOutlineSequences(plotter.PatternMaps);
+            plotter.FillingSequences = new List<List<Coordinate>>[(plotter.PatternMaps.Length / 2) - 1];
+            plotter.FillingSequences = plotter.GenerateFillingSequences(plotter.PatternMaps);
+        }
+
+        //
         private void generatePatternSequencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (plotter.PatternMaps != null)
             {
-                plotter.OutlineSequences = new List<List<Coordinate>>[(plotter.PatternMaps.Length / 2) - 1];
-                plotter.OutlineSequences = plotter.GenerateOutlineSequences(plotter.PatternMaps);
-                plotter.FillingSequences = new List<List<Coordinate>>[(plotter.PatternMaps.Length / 2) - 1];
-                plotter.FillingSequences = plotter.GenerateFillingSequences(plotter.PatternMaps);
+                const int Size = 128 * 1024 * 1024;
+                Thread generateThread = new Thread(new ThreadStart(generateSeqOnthread), Size);
+                generateThread.Start();
+                
             }
             else
                 MessageBox.Show("Pattern maps not generated", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

@@ -373,19 +373,18 @@ public static class plotter
     internal static List<List<Coordinate>>[] GenerateOutlineSequences(Bitmap[,] patternMaps)
     {
         List<List<Coordinate>>[] OutlineSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length / 2)];
-        FormLoadingcs load = new FormLoadingcs(true, "Generating Outline Sequences");
-        load.Show();
+        //FormLoadingcs load = new FormLoadingcs(true, "Generating Outline Sequences");
+        //load.Show();
         
         //loop over colour outlines
         for (int i = 0; i < ((patternMaps.Length / 2)); i++)
         {
-            load.setProgress(5);
             List<List<Coordinate>> SequenceList = new List<List<Coordinate>>();
             SequenceList = GenerateOutlineSequenceList(patternMaps[i, 0]);
             OutlineSequenceImageList[i] = SequenceList;
             
         }
-        load.Close();
+        //load.Close();
         return OutlineSequenceImageList;
     }
 
@@ -557,8 +556,8 @@ public static class plotter
     internal static List<List<Coordinate>>[] GenerateFillingSequences(Bitmap[,] patternMaps)
     {
         List<List<Coordinate>>[] FillingSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length / 2)];
-        FormLoadingcs load = new FormLoadingcs(true, "Generating Filling Sequences");
-        load.Show();
+        //FormLoadingcs load = new FormLoadingcs(true, "Generating Filling Sequences");
+        //load.Show();
         //loop over colour outlines
         for (int i = 0; i < ((patternMaps.Length / 2)); i++)
         {
@@ -566,7 +565,7 @@ public static class plotter
             SequenceList = GenerateFillingSequenceList(patternMaps[i, 1]);
             FillingSequenceImageList[i] = SequenceList;
         }
-        load.Close();
+        //load.Close();
         return FillingSequenceImageList;
     }
 
