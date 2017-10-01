@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Plotter;
 
 namespace Plotter
 {
@@ -23,7 +24,7 @@ namespace Plotter
         {
             InitializeComponent();
             frm1 = refer;
-            SP = new SerialPort(Form1.ComPort, Form1.ComRate);
+            SP = new SerialPort(plotter.ComPort, plotter.ComRate);
             SP.Write("MCon;");
             SP.Close();
         }
@@ -41,7 +42,7 @@ namespace Plotter
 
         private void buttonRight_Click(object sender, EventArgs e)
         {
-            if (X < frm1.PsizeX)
+            if (X < plotter.PsizeX)
             {
                 SP.Open();
                 SP.Write("V1,0;");
@@ -52,7 +53,7 @@ namespace Plotter
 
         private void buttonDown_Click(object sender, EventArgs e)
         {
-            if (Y < frm1.PsizeY)
+            if (Y < plotter.PsizeY)
             {
                 SP.Open();
                 SP.Write("V0,1;");

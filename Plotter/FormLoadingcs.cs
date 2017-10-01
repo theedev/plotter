@@ -16,6 +16,20 @@ namespace Plotter
         {
             InitializeComponent();
         }
+        public FormLoadingcs(bool isUnknown, string text)
+        {
+            InitializeComponent();
+            this.Text = text;
+            if (isUnknown)
+            {
+                progressBar1.Style = ProgressBarStyle.Marquee;
+                progressBar1.MarqueeAnimationSpeed = 100;
+            }
+            else
+            {
+                progressBar1.Style = ProgressBarStyle.Continuous;
+            }
+        }
 
         private void FormLoadingcs_Load(object sender, EventArgs e)
         {

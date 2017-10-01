@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Ports;
 using System.Windows.Forms;
+using System.Threading;
 
 public static class plotter
 {
@@ -159,7 +160,7 @@ public static class plotter
     internal static Bitmap dither(Bitmap src1, int width, int height, List<Color> Compcol)
     {
         Bitmap diffBM = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-        FormLoadingcs frmld = new FormLoadingcs();
+        FormLoadingcs frmld = new FormLoadingcs(false,"Dithering");
         frmld.Show();
         int progress = 0;
         if (Compcol.Count > 2)
@@ -372,14 +373,19 @@ public static class plotter
     internal static List<List<Coordinate>>[] GenerateOutlineSequences(Bitmap[,] patternMaps)
     {
         List<List<Coordinate>>[] OutlineSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length / 2)];
+        FormLoadingcs load = new FormLoadingcs(true, "Generating Outline Sequences");
+        load.Show();
+        
         //loop over colour outlines
         for (int i = 0; i < ((patternMaps.Length / 2)); i++)
         {
+            load.setProgress(5);
             List<List<Coordinate>> SequenceList = new List<List<Coordinate>>();
             SequenceList = GenerateOutlineSequenceList(patternMaps[i, 0]);
             OutlineSequenceImageList[i] = SequenceList;
+            
         }
-
+        load.Close();
         return OutlineSequenceImageList;
     }
 
@@ -409,7 +415,6 @@ public static class plotter
                     }
                     if (!Ignored)
                     {
-
                         List<Coordinate> pattern = new List<Coordinate>();
                         FindOutlineSequence(pixel, bitmap, pattern);
                         SL.Add(pattern);
@@ -446,18 +451,17 @@ public static class plotter
                 new Coordinate(pixel.X()+1, pixel.Y()+1),
                 new Coordinate(pixel.X()-1, pixel.Y()+1),
                 new Coordinate(pixel.X()+1, pixel.Y()-1),
-            };
+        };
         //check the surrounding pixels of a pixel
         foreach (Coordinate newPixel in SurroundingPixels)
         {
             //if any of them is red
-            if (newPixel.X() >= 0 && newPixel.X() <= bitmap.Width && newPixel.Y() >= 0 && newPixel.Y() <= bitmap.Height)
+            if (newPixel.X() >= 0 && newPixel.X() < bitmap.Width && newPixel.Y() >= 0 && newPixel.Y() < bitmap.Height)
                 if (bitmap.GetPixel(newPixel.X(), newPixel.Y()) == Color.FromArgb(255, 0, 0))
                 {
                     FindOutlineSequence(newPixel, bitmap, sequence);
                 }
         }
-
     }
 
     internal static void SendPrintingInfo(Form1 frm1)
@@ -553,6 +557,8 @@ public static class plotter
     internal static List<List<Coordinate>>[] GenerateFillingSequences(Bitmap[,] patternMaps)
     {
         List<List<Coordinate>>[] FillingSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length / 2)];
+        FormLoadingcs load = new FormLoadingcs(true, "Generating Filling Sequences");
+        load.Show();
         //loop over colour outlines
         for (int i = 0; i < ((patternMaps.Length / 2)); i++)
         {
@@ -560,7 +566,7 @@ public static class plotter
             SequenceList = GenerateFillingSequenceList(patternMaps[i, 1]);
             FillingSequenceImageList[i] = SequenceList;
         }
-
+        load.Close();
         return FillingSequenceImageList;
     }
 
@@ -625,8 +631,8 @@ public static class plotter
         //check the surrounding pixels of a pixel
         foreach (Coordinate newPixel in SurroundingPixels)
         {
-            //if any of them is red
-            if (pixel.X() - 1 >= 0 && pixel.X() + 1 <= bitmap.Width)
+            //if any of them is green
+            if (pixel.X() - 1 >= 0 && pixel.X() + 1 < bitmap.Width)
                 if (bitmap.GetPixel(newPixel.X(), newPixel.Y()) == Color.FromArgb(0, 255, 0))
                 {
                     FindOutlineSequence(newPixel, bitmap, sequence);

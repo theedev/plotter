@@ -90,15 +90,22 @@ namespace Plotter
             plotter.Handshake();
             label4.Text = plotter.PlotterName;
         }
-        
-        private void ditherToolStripMenuItem_Click(object sender, EventArgs e)
+        //in between void 
+        void ditheronthread2 ()
         {
             Bitmap bmpint = (Bitmap)pictureBox1.Image;
+            Bitmap bmpnew = plotter.dither(bmpint, bmpint.Width, bmpint.Height, plotter.compcol);
+            pictureBox1.Image = bmpnew;
+            plotter.Dithered = true;
+        }
+        //
+        private void ditherToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
             if (pictureBox1.Image != null)
             {
-                Bitmap bmpnew = plotter.dither(bmpint, bmpint.Width, bmpint.Height, plotter.compcol);
-                pictureBox1.Image = bmpnew;
-                plotter.Dithered = true;
+                Thread ditherThread = new Thread(new ThreadStart(ditheronthread2));
+                ditherThread.Start();
             }
             else
             {
