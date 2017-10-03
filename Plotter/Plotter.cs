@@ -204,10 +204,8 @@ public static class plotter
                 {
                     Color col1 = src1.GetPixel(x, y);
                     Color newcol = Color.FromArgb(255, 255, 255);
-
-                    foreach (Color col in Compcol)
-                    {
-
+                    Color col = compcol[0];
+                    
                         int Avg = (col1.R + col1.G + col1.B) / 3;
                         if (Avg > 127)
                         {
@@ -215,9 +213,9 @@ public static class plotter
                         }
                         else
                         {
-                            newcol = Color.FromArgb(0, 0, 0);
+                            newcol = col;
                         }
-                    }
+                    
                     diffBM.SetPixel(x, y, newcol);
 
 

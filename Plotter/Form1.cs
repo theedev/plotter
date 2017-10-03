@@ -104,8 +104,15 @@ namespace Plotter
             
             if (pictureBox1.Image != null)
             {
-                Thread ditherThread = new Thread(new ThreadStart(ditheronthread2));
-                ditherThread.Start();
+                if (plotter.compcol.Count > 1)
+                {
+                    Thread ditherThread = new Thread(new ThreadStart(ditheronthread2));
+                    ditherThread.Start();
+                }
+                else
+                {
+                    MessageBox.Show("No Colors available", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
@@ -132,7 +139,7 @@ namespace Plotter
             else
                 MessageBox.Show("Colour maps not generated", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-        //in between void
+        //in between voids
         void generateSeqOnthread()
         {
             
@@ -144,7 +151,7 @@ namespace Plotter
                 {
                     Application.DoEvents();
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
             loader.Close();
         }
 
