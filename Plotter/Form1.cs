@@ -119,12 +119,16 @@ namespace Plotter
                 MessageBox.Show("No picture loaded", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        void generateonT2()
+        {
+            plotter.ColourMaps = plotter.GenerateColourMaps((Bitmap)pictureBox1.Image, plotter.compcol);
+        }
         private void generateColourMapsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (plotter.Dithered)
             {
-                plotter.ColourMaps = plotter.GenerateColourMaps((Bitmap)pictureBox1.Image, plotter.compcol);
+                Thread Th2 = new Thread(new ThreadStart(generateonT2));
+                Th2.Start();
             }
             else
                 MessageBox.Show("Picture not dithered", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -263,7 +267,7 @@ namespace Plotter
         {
             if (plotter.PatternMaps != null)
             {
-                for (int i = 0; i < ((plotter.PatternMaps.Length / 2) - 1); i++)
+                for (int i = 0; i < ((plotter.PatternMaps.Length / 2)); i++)
                 {
                     FormColMap frmclmap = new FormColMap();
                     FormColMap frmclmap2 = new FormColMap();
