@@ -688,7 +688,7 @@ public static class plotter
         }
         catch
         {
-            MessageBox.Show("Device not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("Device not connected", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return false;
         }
         return true;
