@@ -89,6 +89,10 @@ namespace Plotter
             plotter.ReloadCols();
             plotter.Handshake();
             label4.Text = plotter.PlotterName;
+            if (label4.Text.Equals ("Plotter Not Connected"))
+                label4.ForeColor = Color.FromArgb(255, 0, 0);
+            else
+                label4.ForeColor = Color.FromArgb(0, 128, 32);
         }
         //in between void 
         void ditheronthread2 ()
@@ -304,6 +308,10 @@ namespace Plotter
         {
             plotter.Handshake();
             label4.Text = plotter.PlotterName;
+            if (label4.Text.Equals("Plotter Not Connected"))
+                label4.ForeColor = Color.FromArgb(255, 0, 0);
+            else
+                label4.ForeColor = Color.FromArgb(0, 128, 32);
         }
         
         private void DiameterMain_ValueChanged(object sender, EventArgs e)
