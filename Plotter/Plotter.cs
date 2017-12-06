@@ -11,6 +11,8 @@ using System.Threading;
 
 public static class plotter
 {
+    
+
     //TODO protect the variables
     public const string ComPort = "COM3";
     public const int ComRate = 9600;
@@ -52,7 +54,6 @@ public static class plotter
     internal static int DownAngle = 0;
 
     internal static int PatternProgressCount;
-
 
     internal static void Loader(String Filename)
     {
@@ -368,7 +369,7 @@ public static class plotter
         return FillingMap;
     }
 
-    internal static List<List<Coordinate>>[] GenerateOutlineSequences(Bitmap[,] patternMaps)
+    internal static List<List<Coordinate>>[] GenerateOutlineSequences(Bitmap[,] patternMaps, Form1 frm1)
     {
         List<List<Coordinate>>[] OutlineSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length / 2)];
         //FormLoadingcs load = new FormLoadingcs(true, "Generating Outline Sequences");
@@ -378,7 +379,7 @@ public static class plotter
         for (int i = 0; i < ((patternMaps.Length / 2)); i++)
         {
             List<List<Coordinate>> SequenceList = new List<List<Coordinate>>();
-            SequenceList = GenerateOutlineSequenceList(patternMaps[i, 0]);
+            SequenceList = GenerateOutlineSequenceList(patternMaps[i, 0], frm1);
             OutlineSequenceImageList[i] = SequenceList;
             
         }
@@ -386,7 +387,7 @@ public static class plotter
         return OutlineSequenceImageList;
     }
 
-    internal static List<List<Coordinate>> GenerateOutlineSequenceList(Bitmap bitmap)
+    internal static List<List<Coordinate>> GenerateOutlineSequenceList(Bitmap bitmap, Form1 frm1)
     {
         IgnoredPixels = new List<Coordinate>();
         int Width = bitmap.Width;
@@ -413,7 +414,7 @@ public static class plotter
                     if (!Ignored)
                     {
                         List<Coordinate> pattern = new List<Coordinate>();
-                        FindOutlineSequence(pixel, bitmap, pattern);
+                        FindOutlineSequence(pixel, bitmap, pattern, frm1);
                         SL.Add(pattern);
                     }
                 }
@@ -422,7 +423,7 @@ public static class plotter
         return SL;
     }
 
-    internal static void FindOutlineSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence)
+    internal static void FindOutlineSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence, Form1 frm1)
     {
         bool Ignored = false;
 
@@ -436,6 +437,7 @@ public static class plotter
         }
         if (Ignored) return;
         sequence.Add(pixel);
+        //frm1.textBox1.Text += pixel.X() + "," + pixel.Y() + ";";
         IgnoredPixels.Add(pixel);
 
         Coordinate[] SurroundingPixels =
@@ -456,7 +458,7 @@ public static class plotter
             if (newPixel.X() >= 0 && newPixel.X() < bitmap.Width && newPixel.Y() >= 0 && newPixel.Y() < bitmap.Height)
                 if (bitmap.GetPixel(newPixel.X(), newPixel.Y()) == Color.FromArgb(255, 0, 0))
                 {
-                    FindOutlineSequence(newPixel, bitmap, sequence);
+                    FindOutlineSequence(newPixel, bitmap, sequence, frm1);
                 }
         }
     }
@@ -579,8 +581,10 @@ public static class plotter
             {
                 if (bitmap.GetPixel(i, j) == Color.FromArgb(0, 255, 0))
                 {
-                    bool Ignored = false;
                     Coordinate pixel = new Coordinate(i, j);
+                    /*
+                    bool Ignored = false;
+                    
                     foreach (Coordinate pixelToCompare in IgnoredPixels)
                     {
                         if (pixel.Compare(pixelToCompare))
@@ -592,35 +596,43 @@ public static class plotter
                             Ignored = false;
                     }
                     if (!Ignored)
-                    {
-
-                        List<Coordinate> pattern = new List<Coordinate>();
-                        FindFillingSequence(pixel, bitmap, pattern);
+                    {*/
+                    List<Coordinate> pattern = new List<Coordinate>();
+                        i = FindFillingSequence(pixel, bitmap, pattern).X();
                         SL.Add(pattern);
-                    }
+                    //}
                 }
             }
         }
         return SL;
     }
 
-    internal static void FindFillingSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence)
+    internal static Coordinate FindFillingSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence)
     {
-
-        bool Ignored = false;
-
-        foreach (Coordinate pixelToCompare in IgnoredPixels)
+        while (bitmap.GetPixel(pixel.X(), pixel.Y()) == Color.FromArgb(0, 255, 0))
         {
-            if (pixel.Compare(pixelToCompare))
-            {
-                Ignored = true;
-                break;
-            }
-        }
-        if (Ignored) return;
-        sequence.Add(pixel);
-        IgnoredPixels.Add(pixel);
+            /*
+            bool Ignored = false;
 
+            foreach (Coordinate pixelToCompare in IgnoredPixels)
+            {
+                if (pixel.Compare(pixelToCompare))
+                {
+                    Ignored = true;
+                    break;
+                }
+            }
+            if (Ignored) return;
+            */
+            Coordinate pix = new Coordinate(pixel.X(), pixel.Y());
+            sequence.Add(pix);
+            IgnoredPixels.Add(pix);
+            pixel.X(pixel.X() + 1);
+        }
+
+        return pixel;
+
+        /*
         Coordinate[] SurroundingPixels =
         {
                 new Coordinate(pixel.X()+1, pixel.Y()),
@@ -632,9 +644,10 @@ public static class plotter
             if (pixel.X() - 1 >= 0 && pixel.X() + 1 < bitmap.Width)
                 if (bitmap.GetPixel(newPixel.X(), newPixel.Y()) == Color.FromArgb(0, 255, 0))
                 {
-                    FindOutlineSequence(newPixel, bitmap, sequence);
+                    FindFillingSequence(newPixel, bitmap, sequence);
                 }
         }
+        */
     }
 
     internal static void Handshake()

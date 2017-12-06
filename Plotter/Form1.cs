@@ -156,27 +156,31 @@ namespace Plotter
                 MessageBox.Show("Colour maps not generated", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         //in between voids
+        
         void generateSeqOnthread()
         {
-            
             FormLoadingcs loader = new FormLoadingcs(true, "Generating Pattern Sequences");
             loader.Show();
-                Thread generatorThread = new Thread(ActualGenerate,128*1024*1024);
+
+            Thread generatorThread = new Thread(ActualGenerate,128*1024*1024);
                 generatorThread.Start();
                 while (generatorThread.ThreadState == ThreadState.Running)
                 {
                     Application.DoEvents();
                 }
-                Thread.Sleep(100);
+            Thread.Sleep(100);
             loader.Close();
         }
 
         private void ActualGenerate()
         {
+            
+            
             plotter.OutlineSequences = new List<List<Coordinate>>[(plotter.PatternMaps.Length / 2) - 1];
-            plotter.OutlineSequences = plotter.GenerateOutlineSequences(plotter.PatternMaps);
+            plotter.OutlineSequences = plotter.GenerateOutlineSequences(plotter.PatternMaps, this);
             plotter.FillingSequences = new List<List<Coordinate>>[(plotter.PatternMaps.Length / 2) - 1];
             plotter.FillingSequences = plotter.GenerateFillingSequences(plotter.PatternMaps);
+
         }
 
         //
@@ -357,6 +361,36 @@ namespace Plotter
         private void timer1_Tick(object sender, EventArgs e)
         {
             plotter.SendPrintingInfo(this);
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            
+            
+        }
+
+        private void halpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < plotter.OutlineSequences.Length; i++)
+            {
+                for (int j = 0; j < plotter.OutlineSequences[i].Count; j++)
+                {
+                    for (int k = 0; k < plotter.OutlineSequences[i][j].Count; k++)
+                    {
+                        textBox1.Text += plotter.OutlineSequences[i][j][k].X() + "," + plotter.OutlineSequences[i][j][k].Y() + ";";
+                    }
+                }
+            }
+            for (int i = 0; i < plotter.FillingSequences.Length; i++)
+            {
+                for (int j = 0; j < plotter.FillingSequences[i].Count; j++)
+                {
+                    for (int k = 0; k < plotter.FillingSequences[i][j].Count; k++)
+                    {
+                        textBox1.Text += plotter.FillingSequences[i][j][k].X() + "," + plotter.FillingSequences[i][j][k].Y() + ";";
+                    }
+                }
+            }
         }
     }
 }

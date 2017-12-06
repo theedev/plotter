@@ -57,6 +57,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.halpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DiameterMain)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DiameterDecimal)).BeginInit();
@@ -219,6 +221,8 @@
             // 
             // helpToolStripMenuItem
             // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.halpToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
@@ -314,12 +318,28 @@
             this.timer1.Interval = 40;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(205, 295);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(38, 20);
+            this.textBox1.TabIndex = 15;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // halpToolStripMenuItem
+            // 
+            this.halpToolStripMenuItem.Name = "halpToolStripMenuItem";
+            this.halpToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.halpToolStripMenuItem.Text = "Halp";
+            this.halpToolStripMenuItem.Click += new System.EventHandler(this.halpToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(370, 317);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.DiameterDecimal);
             this.Controls.Add(this.label3);
@@ -374,6 +394,8 @@
         internal System.Windows.Forms.NumericUpDown DiameterMain;
         internal System.Windows.Forms.NumericUpDown DiameterDecimal;
         internal System.Windows.Forms.Timer timer1;
+        public System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ToolStripMenuItem halpToolStripMenuItem;
     }
 }
 
