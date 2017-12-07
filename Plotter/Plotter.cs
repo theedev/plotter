@@ -47,7 +47,7 @@ public static class plotter
     static int currentJ = 0;
     static bool PrintingFilling = false;
 
-    internal static bool PlotterAvailable = false;
+    internal static bool plotterAvailable = false;
     internal static string PlotterName = "Plotter Not Connected";
     internal static int PsizeX = 0;
     internal static int PsizeY = 0;
@@ -609,6 +609,8 @@ public static class plotter
 
     internal static Coordinate FindFillingSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence)
     {
+        Coordinate pix = new Coordinate(pixel.X(), pixel.Y());
+        sequence.Add(pix);
         while (bitmap.GetPixel(pixel.X(), pixel.Y()) == Color.FromArgb(0, 255, 0))
         {
             /*
@@ -624,12 +626,12 @@ public static class plotter
             }
             if (Ignored) return;
             */
-            Coordinate pix = new Coordinate(pixel.X(), pixel.Y());
-            sequence.Add(pix);
-            IgnoredPixels.Add(pix);
+            
+            //sequence.Add(new Coordinate(pixel.X(), pixel.Y()));
+            //IgnoredPixels.Add(pix);
             pixel.X(pixel.X() + 1);
         }
-
+        sequence.Add(new Coordinate(pixel.X()-1, pixel.Y()));
         return pixel;
 
         /*
@@ -652,7 +654,7 @@ public static class plotter
 
     internal static void Handshake()
     {
-        PlotterAvailable = false;
+        plotterAvailable = false;
         String[] HSI = new String[4];
         String HandshakeInfo;
         if (OpenPort())
@@ -662,8 +664,8 @@ public static class plotter
             SP.Write("OK;");
             HandshakeInfo = SP.ReadLine();
             if (HandshakeInfo == "OKAYYYYYYY\r")
-                PlotterAvailable = true;
-            if (PlotterAvailable)
+                plotterAvailable = true;
+            if (plotterAvailable)
             {
                 //Request a plotter's name
                 SP.Write("RName;");

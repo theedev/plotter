@@ -371,13 +371,14 @@ namespace Plotter
 
         private void halpToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            StreamWriter sht = new StreamWriter("out.txt");
             for (int i = 0; i < plotter.OutlineSequences.Length; i++)
             {
                 for (int j = 0; j < plotter.OutlineSequences[i].Count; j++)
                 {
                     for (int k = 0; k < plotter.OutlineSequences[i][j].Count; k++)
                     {
-                        textBox1.Text += plotter.OutlineSequences[i][j][k].X() + "," + plotter.OutlineSequences[i][j][k].Y() + ";";
+                        sht.Write(plotter.OutlineSequences[i][j][k].X() + "," + plotter.OutlineSequences[i][j][k].Y() + ";");
                     }
                 }
             }
@@ -387,17 +388,18 @@ namespace Plotter
                 {
                     for (int k = 0; k < plotter.FillingSequences[i][j].Count; k++)
                     {
-                        textBox1.Text += plotter.FillingSequences[i][j][k].X() + "," + plotter.FillingSequences[i][j][k].Y() + ";";
+                        sht.Write(plotter.FillingSequences[i][j][k].X() + "," + plotter.FillingSequences[i][j][k].Y() + ";");
                     }
                 }
             }
+            sht.Close();
         }
     }
 }
 /*
         private void SendOutlineInfo()
         {
-            if (PlotterAvailable)
+            if (plotterAvailable)
             {
                 SP.Open();
                 SP.Write("PMode;");
