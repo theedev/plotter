@@ -27,7 +27,7 @@ namespace Plotter
             pictureBox1.AllowDrop = true;
         }
         
-
+        //a function that ovverrides windows' default interpolation mode in order to display a sharp image
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             if (pictureBox1.Image != null)
@@ -248,10 +248,6 @@ namespace Plotter
             }
         }
 
-        private void showColourMapsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void showColourMapsToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
@@ -274,10 +270,6 @@ namespace Plotter
                 MessageBox.Show("Colour maps not generated", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void previewEdgeAndFillingMapsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void previewEdgeAndFillingMapsToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
@@ -363,11 +355,6 @@ namespace Plotter
             PlotterFunctions.sendPrintingInfo(this);
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            
-            
-        }
 
         private void halpToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -396,40 +383,3 @@ namespace Plotter
         }
     }
 }
-/*
-        private void SendOutlineInfo()
-        {
-            if (plotterAvailable)
-            {
-                SP.Open();
-                SP.Write("PMode;");
-                for (int h = 0; h < compcol.Count - 1; h++)
-                {
-                    if (MessageBox.Show("Please insert pen with colour " + coloursInv[compcol[h]], "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information) = DialogResult.OK)
-                    for (int i = 0; i < Sequences[0].Count; i++)
-                    {
-                        for (int j = 0; j < Sequences[0][i].Count; j++)
-                        {
-                            char[] bytes = new char[4];
-                            int X = Sequences[0][i][j].X();
-                            int Y = Sequences[0][i][j].Y();
-
-                            bytes[3] = (char)((Y >> 8) & 0xFF);
-                            bytes[2] = (char)(Y & 0xFF);
-                            bytes[1] = (char)((X >> 8) & 0xFF);
-                            bytes[0] = (char)(X & 0xFF);
-
-                            string k = new string(bytes);
-
-                            SP.Write(k);
-
-                            //SP.Write(Sequences[0][i][j].X() + "," + Sequences[0][i][j].Y() + ";");
-                            //textBox1.Text += Sequences[0][i][j].X() + "," + Sequences[0][i][j].Y() + ";";
-                        }
-                    }
-                }
-                //SP.Write(":");
-                SP.Close();
-            }
-        }
-        */

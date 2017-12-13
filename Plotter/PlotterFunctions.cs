@@ -372,8 +372,6 @@ public static class PlotterFunctions
     internal static List<List<Coordinate>>[] generateOutlineSequences(Bitmap[,] patternMaps, Form1 frm1)
     {
         List<List<Coordinate>>[] OutlineSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length / 2)];
-        //FormLoadingcs load = new FormLoadingcs(true, "Generating Outline Sequences");
-        //load.Show();
         
         //loop over colour outlines
         for (int i = 0; i < ((patternMaps.Length / 2)); i++)
@@ -383,7 +381,6 @@ public static class PlotterFunctions
             OutlineSequenceImageList[i] = SequenceList;
             
         }
-        //load.Close();
         return OutlineSequenceImageList;
     }
 
@@ -437,7 +434,6 @@ public static class PlotterFunctions
         }
         if (Ignored) return;
         sequence.Add(pixel);
-        //frm1.textBox1.Text += pixel.X() + "," + pixel.Y() + ";";
         ignoredPixels.Add(pixel);
 
         Coordinate[] SurroundingPixels =
@@ -556,8 +552,7 @@ public static class PlotterFunctions
     internal static List<List<Coordinate>>[] generateFillingSequences(Bitmap[,] patternMaps)
     {
         List<List<Coordinate>>[] FillingSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length / 2)];
-        //FormLoadingcs load = new FormLoadingcs(true, "Generating Filling Sequences");
-        //load.Show();
+
         //loop over colour outlines
         for (int i = 0; i < ((patternMaps.Length / 2)); i++)
         {
@@ -565,7 +560,7 @@ public static class PlotterFunctions
             SequenceList = generateFillingSequenceList(patternMaps[i, 1]);
             FillingSequenceImageList[i] = SequenceList;
         }
-        //load.Close();
+
         return FillingSequenceImageList;
     }
 
@@ -582,25 +577,9 @@ public static class PlotterFunctions
                 if (bitmap.GetPixel(i, j) == Color.FromArgb(0, 255, 0))
                 {
                     Coordinate pixel = new Coordinate(i, j);
-                    /*
-                    bool Ignored = false;
-                    
-                    foreach (Coordinate pixelToCompare in ignoredPixels)
-                    {
-                        if (pixel.Compare(pixelToCompare))
-                        {
-                            Ignored = true;
-                            break;
-                        }
-                        else
-                            Ignored = false;
-                    }
-                    if (!Ignored)
-                    {*/
                     List<Coordinate> pattern = new List<Coordinate>();
                         i = findFillingSequence(pixel, bitmap, pattern).X();
                         SL.Add(pattern);
-                    //}
                 }
             }
         }
@@ -613,43 +592,10 @@ public static class PlotterFunctions
         sequence.Add(pix);
         while (bitmap.GetPixel(pixel.X(), pixel.Y()) == Color.FromArgb(0, 255, 0))
         {
-            /*
-            bool Ignored = false;
-
-            foreach (Coordinate pixelToCompare in ignoredPixels)
-            {
-                if (pixel.Compare(pixelToCompare))
-                {
-                    Ignored = true;
-                    break;
-                }
-            }
-            if (Ignored) return;
-            */
-            
-            //sequence.Add(new Coordinate(pixel.X(), pixel.Y()));
-            //ignoredPixels.Add(pix);
             pixel.X(pixel.X() + 1);
         }
         sequence.Add(new Coordinate(pixel.X()-1, pixel.Y()));
         return pixel;
-
-        /*
-        Coordinate[] SurroundingPixels =
-        {
-                new Coordinate(pixel.X()+1, pixel.Y()),
-            };
-        //check the surrounding pixels of a pixel
-        foreach (Coordinate newPixel in SurroundingPixels)
-        {
-            //if any of them is green
-            if (pixel.X() - 1 >= 0 && pixel.X() + 1 < bitmap.Width)
-                if (bitmap.GetPixel(newPixel.X(), newPixel.Y()) == Color.FromArgb(0, 255, 0))
-                {
-                    findFillingSequence(newPixel, bitmap, sequence);
-                }
-        }
-        */
     }
 
     internal static void handshake()
