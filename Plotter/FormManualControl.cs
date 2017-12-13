@@ -24,7 +24,7 @@ namespace Plotter
         {
             InitializeComponent();
             frm1 = refer;
-            SP = new SerialPort(plotter.ComPort, plotter.ComRate);
+            SP = new SerialPort(PlotterFunctions.comPort, PlotterFunctions.comRate);
             SP.Write("MCon;");
             SP.Close();
         }
@@ -42,7 +42,7 @@ namespace Plotter
 
         private void buttonRight_Click(object sender, EventArgs e)
         {
-            if (X < plotter.PsizeX)
+            if (X < PlotterFunctions.pSizeX)
             {
                 SP.Open();
                 SP.Write("V1,0;");
@@ -53,7 +53,7 @@ namespace Plotter
 
         private void buttonDown_Click(object sender, EventArgs e)
         {
-            if (Y < plotter.PsizeY)
+            if (Y < PlotterFunctions.pSizeY)
             {
                 SP.Open();
                 SP.Write("V0,1;");

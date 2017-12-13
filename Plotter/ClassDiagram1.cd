@@ -13,7 +13,7 @@
   <Class Name="Plotter.Form1">
     <Position X="3.75" Y="3" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>RQUAAAagICugABQgECCQQAESAxAoNEBAAxRAgaBIA8g=</HashCode>
+      <HashCode>RQUAAAagICugABQgECCQQIESAxAoPEBAExRAgaBIA8g=</HashCode>
       <FileName>Form1.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -48,31 +48,26 @@
       <Field Name="frm1" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="plotter">
+  <Class Name="PlotterFunctions">
     <Position X="18.5" Y="3" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>QBAAAEIEDImgRDAQJABoAACVQIAAIDADAEADCEACAAQ=</HashCode>
-      <FileName>plotter.cs</FileName>
+      <HashCode>QFQEBCAAUAjiBFiDIAAgBACgIIEAFQVAEAAKAABAgAg=</HashCode>
+      <FileName>PlotterFunctions.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="ColourMaps" />
-      <Field Name="PatternMaps" />
       <Field Name="SP" />
+      <Field Name="colourMaps" />
+      <Field Name="patternMaps" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
+      <Field Name="colours" />
+      <Field Name="coloursInv" />
       <Field Name="compcol" />
-      <Field Name="Colours" />
-      <Field Name="Coloursinv" />
-      <Field Name="IgnoredPixels" />
+      <Field Name="ignoredPixels" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="System.Windows.Forms.Form" Collapsed="true">
     <Position X="3" Y="1.75" Width="1.5" />
-    <NestedTypes>
-      <Class Name="System.Windows.Forms.Form.ControlCollection" Collapsed="true">
-        <TypeIdentifier />
-      </Class>
-    </NestedTypes>
     <TypeIdentifier />
   </Class>
   <Class Name="System.Object" Collapsed="true">

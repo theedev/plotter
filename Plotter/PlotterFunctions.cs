@@ -9,53 +9,53 @@ using System.IO.Ports;
 using System.Windows.Forms;
 using System.Threading;
 
-public static class plotter
+public static class PlotterFunctions
 {
     
 
     //TODO protect the variables
-    public const string ComPort = "COM3";
-    public const int ComRate = 9600;
-    internal static SerialPort SP = new SerialPort(ComPort, ComRate);
+    public const string comPort = "COM3";
+    public const int comRate = 9600;
+    internal static SerialPort SP = new SerialPort(comPort, comRate);
 
     //booleans to check what's going on
-    internal static bool Dithered = false;
-    internal static bool SettingNumerics = false;
+    internal static bool dithered = false;
+    internal static bool settingNumerics = false;
 
     // add a dictionary that has a name and colour
-    public static Dictionary<String, Color> Colours = new Dictionary<String, Color>();
-    public static Dictionary<Color, String> Coloursinv = new Dictionary<Color, String>();
+    public static Dictionary<String, Color> colours = new Dictionary<String, Color>();
+    public static Dictionary<Color, String> coloursInv = new Dictionary<Color, String>();
 
     //a list to compare colours
     internal static List<Color> compcol = new List<Color>();
 
     //the diameter of an ink dot
-    internal static float Diameter = 0f;
+    internal static float diameter = 0f;
 
     //an array of colour maps
-    internal static Bitmap[] ColourMaps;
+    internal static Bitmap[] colourMaps;
     //an array of pattern maps
-    internal static Bitmap[,] PatternMaps;
+    internal static Bitmap[,] patternMaps;
 
-    static List<Coordinate> IgnoredPixels;
+    static List<Coordinate> ignoredPixels;
 
-    internal static List<List<Coordinate>>[] OutlineSequences;
-    internal static List<List<Coordinate>>[] FillingSequences;
+    internal static List<List<Coordinate>>[] outlineSequences;
+    internal static List<List<Coordinate>>[] fillingSequences;
 
     static int currentH = 0;
     static int currentI = 0;
     static int currentJ = 0;
-    static bool PrintingFilling = false;
+    static bool printingFilling = false;
 
     internal static bool plotterAvailable = false;
-    internal static string PlotterName = "Plotter Not Connected";
-    internal static int PsizeX = 0;
-    internal static int PsizeY = 0;
-    internal static int DownAngle = 0;
+    internal static string plotterName = "Plotter Not Connected";
+    internal static int pSizeX = 0;
+    internal static int pSizeY = 0;
+    internal static int downAngle = 0;
 
-    internal static int PatternProgressCount;
+    internal static int patternProgressCount;
 
-    internal static void Loader(String Filename)
+    internal static void loader(String Filename)
     {
         //Access the file
         string line;
@@ -68,20 +68,20 @@ public static class plotter
             {
                 if (line.Equals("#Colours"))
                 {
-                    Colours.Clear();
+                    colours.Clear();
                     line = file.ReadLine();
                     while (!line.Equals("!;"))
                     {
                         String[] colourPrep = line.Split(':');
                         Color ColourTemp = Color.FromArgb(Int32.Parse(colourPrep[1]), Int32.Parse(colourPrep[2]), Int32.Parse(colourPrep[3]));
-                        Colours.Add(colourPrep[0], ColourTemp);
+                        colours.Add(colourPrep[0], ColourTemp);
                         line = file.ReadLine();
                     }
                 }
                 if (line.Equals("#Diameter"))
                 {
                     line = file.ReadLine();
-                    Diameter = float.Parse(line);
+                    diameter = float.Parse(line);
                     line = file.ReadLine();
                 }
 
@@ -91,25 +91,25 @@ public static class plotter
 
         else
         {
-            CreateNewConfig(Filename);
-            Loader(Filename);
+            createNewConfig(Filename);
+            loader(Filename);
         }
 
     }
 
-    internal static void Saver(String Filename)
+    internal static void saver(String Filename)
     {
         StreamWriter file = new StreamWriter(Filename);
         //looping colours
         file.WriteLine("#Colours");
-        foreach (KeyValuePair<String, Color> colour in Colours)
+        foreach (KeyValuePair<String, Color> colour in colours)
         {
             file.WriteLine(colour.Key + ":" + colour.Value.R + ":" + colour.Value.G + ":" + colour.Value.B);
         }
         file.WriteLine("!;");
         file.WriteLine("#Diameter");
-        file.Write(Diameter);
-        if (Diameter.ToString().Split('.').Length > 1)
+        file.Write(diameter);
+        if (diameter.ToString().Split('.').Length > 1)
         {
             file.WriteLine("0");
         }
@@ -121,22 +121,22 @@ public static class plotter
         file.Close();
     }
 
-    internal static void ReloadCols()
+    internal static void reloadColours()
     {
         compcol.Clear();
-        foreach (KeyValuePair<String, Color> colour in Colours)
+        foreach (KeyValuePair<String, Color> colour in colours)
         {
             compcol.Add(colour.Value);
         }
         compcol.Add(Color.FromArgb(255, 255, 255));
-        Coloursinv.Clear();
-        foreach (KeyValuePair<String, Color> colToInv in Colours)
+        coloursInv.Clear();
+        foreach (KeyValuePair<String, Color> colToInv in colours)
         {
-            Coloursinv.Add(colToInv.Value, colToInv.Key);
+            coloursInv.Add(colToInv.Value, colToInv.Key);
         }
     }
 
-    internal static void CreateNewConfig(string Filename)
+    internal static void createNewConfig(string Filename)
     {
         StreamWriter file = new StreamWriter(Filename);
         file.WriteLine("#Colours");
@@ -147,7 +147,7 @@ public static class plotter
         file.Close();
     }
 
-    internal static float ChangeDiameter(decimal main, decimal deci)
+    internal static float changeDiameter(decimal main, decimal deci)
     {
         float NewDiameter = 0f;
         NewDiameter += (float)main;
@@ -229,7 +229,7 @@ public static class plotter
         return diffBM;
     }
 
-    internal static Bitmap[] GenerateColourMaps(Bitmap pic, List<Color> cols)
+    internal static Bitmap[] generateColourMaps(Bitmap pic, List<Color> cols)
     {
         Bitmap[] CMaps = new Bitmap[cols.Count];
         FormLoadingcs frmldgn = new FormLoadingcs();
@@ -238,7 +238,7 @@ public static class plotter
         {
 
             if (i < compcol.Count - 1)
-                frmldgn.Text = "Generating - " + Coloursinv[compcol[i]] + " (" + (i + 1) + "/" + compcol.Count + ")";
+                frmldgn.Text = "Generating - " + coloursInv[compcol[i]] + " (" + (i + 1) + "/" + compcol.Count + ")";
             else
                 frmldgn.Text = "Generating - White" + " (" + (i + 1) + "/" + compcol.Count + ")";
 
@@ -266,13 +266,13 @@ public static class plotter
         return CMaps;
     }
 
-    internal static Bitmap[,] GeneratePatternMaps(Bitmap[] ColMaps)
+    internal static Bitmap[,] generatePatternMaps(Bitmap[] ColMaps)
     {
         //create a 2 dimensional array
         Bitmap[,] Patterns = new Bitmap[ColMaps.Length - 1, 2];
         //take colour image
         FormLoadingcs frmldgn = new FormLoadingcs();
-        PatternProgressCount = -1;
+        patternProgressCount = -1;
         frmldgn.Show();
         int counter = 0;
         for (int i = 0; i < ColMaps.Length - 1; i++)
@@ -284,16 +284,16 @@ public static class plotter
             Bitmap Filling = new Bitmap(bmp.Width, bmp.Height, PixelFormat.Format24bppRgb);
 
             if (i < compcol.Count - 1)
-                frmldgn.Text = "Generating Outline - " + Coloursinv[compcol[i]] + " (" + (counter) + "/" + ((compcol.Count - 1) * 2) + ")";
+                frmldgn.Text = "Generating Outline - " + coloursInv[compcol[i]] + " (" + (counter) + "/" + ((compcol.Count - 1) * 2) + ")";
 
             //call an outlining method on the first bitmap, specify colour
             Outline = FindOutline(Color.FromArgb(255, 0, 0), bmp, frmldgn);
             //call a filling method on the second bitmap, specify colour
             counter++;
             if (i < compcol.Count - 1)
-                frmldgn.Text = "Generating Filling - " + Coloursinv[compcol[i]] + " (" + (counter) + "/" + ((compcol.Count - 1) * 2) + ")";
+                frmldgn.Text = "Generating Filling - " + coloursInv[compcol[i]] + " (" + (counter) + "/" + ((compcol.Count - 1) * 2) + ")";
 
-            Filling = FindFilling(Color.FromArgb(0, 255, 0), Outline, bmp, frmldgn);
+            Filling = findFilling(Color.FromArgb(0, 255, 0), Outline, bmp, frmldgn);
             //add the 2 bitmaps to the Array
             Patterns[i, 0] = Outline;
             Patterns[i, 1] = Filling;
@@ -309,22 +309,22 @@ public static class plotter
         //loop though colour map
         for (int y = 0; y < MaptoCheck.Height; y++)
         {
-            PatternProgressCount++;
+            patternProgressCount++;
             for (int x = 0; x < MaptoCheck.Width; x++)
             {
                 Coordinate pixel = new Coordinate(x, y);
                 //if the pixel is a 1 (black) then check pixel
                 if (MaptoCheck.GetPixel(x, y) == Color.FromArgb(0, 0, 0))
                 {
-                    CheckPixel(pixel, colour, MaptoCheck, linmap);
+                    checkPixel(pixel, colour, MaptoCheck, linmap);
                 }
             }
-            frmldgn.setProgress((int)(((float)PatternProgressCount / (float)MaptoCheck.Height * 100f) / (float)((compcol.Count - 1) * 2)));
+            frmldgn.setProgress((int)(((float)patternProgressCount / (float)MaptoCheck.Height * 100f) / (float)((compcol.Count - 1) * 2)));
         }
         return linmap;
     }
 
-    internal static void CheckPixel(Coordinate pixel, Color colour, Bitmap MapTC, Bitmap MapTA)
+    internal static void checkPixel(Coordinate pixel, Color colour, Bitmap MapTC, Bitmap MapTA)
     {
         Coordinate[] SurroundersDirect =
        {
@@ -348,12 +348,12 @@ public static class plotter
         }
     }
 
-    internal static Bitmap FindFilling(Color colour, Bitmap OutlineMap, Bitmap MapToFill, FormLoadingcs frmldgn)
+    internal static Bitmap findFilling(Color colour, Bitmap OutlineMap, Bitmap MapToFill, FormLoadingcs frmldgn)
     {
         Bitmap FillingMap = new Bitmap(OutlineMap.Width, OutlineMap.Height, PixelFormat.Format24bppRgb);
         for (int y = 0; y < OutlineMap.Height; y++)
         {
-            PatternProgressCount++;
+            patternProgressCount++;
             for (int x = 0; x < OutlineMap.Width; x++)
             {
                 if (MapToFill.GetPixel(x, y) == Color.FromArgb(0, 0, 0))
@@ -364,12 +364,12 @@ public static class plotter
                     }
                 }
             }
-            frmldgn.setProgress((int)(((float)PatternProgressCount / (float)MapToFill.Height * 100f) / (float)((compcol.Count - 1) * 2)));
+            frmldgn.setProgress((int)(((float)patternProgressCount / (float)MapToFill.Height * 100f) / (float)((compcol.Count - 1) * 2)));
         }
         return FillingMap;
     }
 
-    internal static List<List<Coordinate>>[] GenerateOutlineSequences(Bitmap[,] patternMaps, Form1 frm1)
+    internal static List<List<Coordinate>>[] generateOutlineSequences(Bitmap[,] patternMaps, Form1 frm1)
     {
         List<List<Coordinate>>[] OutlineSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length / 2)];
         //FormLoadingcs load = new FormLoadingcs(true, "Generating Outline Sequences");
@@ -379,7 +379,7 @@ public static class plotter
         for (int i = 0; i < ((patternMaps.Length / 2)); i++)
         {
             List<List<Coordinate>> SequenceList = new List<List<Coordinate>>();
-            SequenceList = GenerateOutlineSequenceList(patternMaps[i, 0], frm1);
+            SequenceList = generateOutlineSequenceList(patternMaps[i, 0], frm1);
             OutlineSequenceImageList[i] = SequenceList;
             
         }
@@ -387,9 +387,9 @@ public static class plotter
         return OutlineSequenceImageList;
     }
 
-    internal static List<List<Coordinate>> GenerateOutlineSequenceList(Bitmap bitmap, Form1 frm1)
+    internal static List<List<Coordinate>> generateOutlineSequenceList(Bitmap bitmap, Form1 frm1)
     {
-        IgnoredPixels = new List<Coordinate>();
+        ignoredPixels = new List<Coordinate>();
         int Width = bitmap.Width;
         int Height = bitmap.Height;
         List<List<Coordinate>> SL = new List<List<Coordinate>>();
@@ -401,7 +401,7 @@ public static class plotter
                 {
                     bool Ignored = false;
                     Coordinate pixel = new Coordinate(i, j);
-                    foreach (Coordinate pixelToCompare in IgnoredPixels)
+                    foreach (Coordinate pixelToCompare in ignoredPixels)
                     {
                         if (pixel.Compare(pixelToCompare))
                         {
@@ -414,7 +414,7 @@ public static class plotter
                     if (!Ignored)
                     {
                         List<Coordinate> pattern = new List<Coordinate>();
-                        FindOutlineSequence(pixel, bitmap, pattern, frm1);
+                        findOutlineSequence(pixel, bitmap, pattern, frm1);
                         SL.Add(pattern);
                     }
                 }
@@ -423,11 +423,11 @@ public static class plotter
         return SL;
     }
 
-    internal static void FindOutlineSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence, Form1 frm1)
+    internal static void findOutlineSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence, Form1 frm1)
     {
         bool Ignored = false;
 
-        foreach (Coordinate pixelToCompare in IgnoredPixels)
+        foreach (Coordinate pixelToCompare in ignoredPixels)
         {
             if (pixel.Compare(pixelToCompare))
             {
@@ -438,7 +438,7 @@ public static class plotter
         if (Ignored) return;
         sequence.Add(pixel);
         //frm1.textBox1.Text += pixel.X() + "," + pixel.Y() + ";";
-        IgnoredPixels.Add(pixel);
+        ignoredPixels.Add(pixel);
 
         Coordinate[] SurroundingPixels =
         {
@@ -458,18 +458,18 @@ public static class plotter
             if (newPixel.X() >= 0 && newPixel.X() < bitmap.Width && newPixel.Y() >= 0 && newPixel.Y() < bitmap.Height)
                 if (bitmap.GetPixel(newPixel.X(), newPixel.Y()) == Color.FromArgb(255, 0, 0))
                 {
-                    FindOutlineSequence(newPixel, bitmap, sequence, frm1);
+                    findOutlineSequence(newPixel, bitmap, sequence, frm1);
                 }
         }
     }
 
-    internal static void SendPrintingInfo(Form1 frm1)
+    internal static void sendPrintingInfo(Form1 frm1)
     {
 
-        if (!PrintingFilling)
+        if (!printingFilling)
         {
-            uint X = (uint)OutlineSequences[currentH][currentI][currentJ].X();
-            uint Y = (uint)OutlineSequences[currentH][currentI][currentJ].Y();
+            uint X = (uint)outlineSequences[currentH][currentI][currentJ].X();
+            uint Y = (uint)outlineSequences[currentH][currentI][currentJ].Y();
             char[] bytes = new char[4];
             bytes[3] = (char)((Y >> 8) & 0xFF);
             bytes[2] = (char)(Y & 0xFF);
@@ -483,17 +483,17 @@ public static class plotter
 
             currentJ++;
 
-            if (currentJ >= OutlineSequences[currentH][currentI].Count)
+            if (currentJ >= outlineSequences[currentH][currentI].Count)
             {
                 currentJ = 0;
                 currentI++;
 
             }
-            if (currentI >= OutlineSequences[currentH].Count)
+            if (currentI >= outlineSequences[currentH].Count)
             {
                 frm1.timer1.Enabled = false;
                 currentH++;
-                PrintingFilling = true;
+                printingFilling = true;
                 currentH--;
                 currentI = 0;
                 currentJ = 0;
@@ -502,8 +502,8 @@ public static class plotter
         }
         else
         {
-            uint X = (uint)FillingSequences[currentH][currentI][currentJ].X();
-            uint Y = (uint)FillingSequences[currentH][currentI][currentJ].Y();
+            uint X = (uint)fillingSequences[currentH][currentI][currentJ].X();
+            uint Y = (uint)fillingSequences[currentH][currentI][currentJ].Y();
 
 
             char[] bytes = new char[4];
@@ -519,17 +519,17 @@ public static class plotter
 
             currentJ++;
 
-            if (currentJ >= FillingSequences[currentH][currentI].Count)
+            if (currentJ >= fillingSequences[currentH][currentI].Count)
             {
                 currentJ = 0;
                 currentI++;
 
             }
-            if (currentI >= FillingSequences[currentH].Count)
+            if (currentI >= fillingSequences[currentH].Count)
             {
                 frm1.timer1.Enabled = false;
                 currentH++;
-                if (currentH >= FillingSequences.Length && PrintingFilling)
+                if (currentH >= fillingSequences.Length && printingFilling)
                 {
                     currentH = 0;
                     currentI = 0;
@@ -540,12 +540,12 @@ public static class plotter
                 }
                 else
                 {
-                    DialogResult dlgr = MessageBox.Show("Insert pen with colour " + plotter.Coloursinv[plotter.compcol[currentH]], "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    DialogResult dlgr = MessageBox.Show("Insert pen with colour " + PlotterFunctions.coloursInv[PlotterFunctions.compcol[currentH]], "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (dlgr == DialogResult.OK)
                     {
                         currentI = 0;
                         currentJ = 0;
-                        PrintingFilling = false;
+                        printingFilling = false;
                         frm1.timer1.Enabled = true;
                     }
                 }
@@ -553,7 +553,7 @@ public static class plotter
         }
     }
 
-    internal static List<List<Coordinate>>[] GenerateFillingSequences(Bitmap[,] patternMaps)
+    internal static List<List<Coordinate>>[] generateFillingSequences(Bitmap[,] patternMaps)
     {
         List<List<Coordinate>>[] FillingSequenceImageList = new List<List<Coordinate>>[(patternMaps.Length / 2)];
         //FormLoadingcs load = new FormLoadingcs(true, "Generating Filling Sequences");
@@ -562,16 +562,16 @@ public static class plotter
         for (int i = 0; i < ((patternMaps.Length / 2)); i++)
         {
             List<List<Coordinate>> SequenceList = new List<List<Coordinate>>();
-            SequenceList = GenerateFillingSequenceList(patternMaps[i, 1]);
+            SequenceList = generateFillingSequenceList(patternMaps[i, 1]);
             FillingSequenceImageList[i] = SequenceList;
         }
         //load.Close();
         return FillingSequenceImageList;
     }
 
-    internal static List<List<Coordinate>> GenerateFillingSequenceList(Bitmap bitmap)
+    internal static List<List<Coordinate>> generateFillingSequenceList(Bitmap bitmap)
     {
-        IgnoredPixels = new List<Coordinate>();
+        ignoredPixels = new List<Coordinate>();
         int Width = bitmap.Width;
         int Height = bitmap.Height;
         List<List<Coordinate>> SL = new List<List<Coordinate>>();
@@ -585,7 +585,7 @@ public static class plotter
                     /*
                     bool Ignored = false;
                     
-                    foreach (Coordinate pixelToCompare in IgnoredPixels)
+                    foreach (Coordinate pixelToCompare in ignoredPixels)
                     {
                         if (pixel.Compare(pixelToCompare))
                         {
@@ -598,7 +598,7 @@ public static class plotter
                     if (!Ignored)
                     {*/
                     List<Coordinate> pattern = new List<Coordinate>();
-                        i = FindFillingSequence(pixel, bitmap, pattern).X();
+                        i = findFillingSequence(pixel, bitmap, pattern).X();
                         SL.Add(pattern);
                     //}
                 }
@@ -607,7 +607,7 @@ public static class plotter
         return SL;
     }
 
-    internal static Coordinate FindFillingSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence)
+    internal static Coordinate findFillingSequence(Coordinate pixel, Bitmap bitmap, List<Coordinate> sequence)
     {
         Coordinate pix = new Coordinate(pixel.X(), pixel.Y());
         sequence.Add(pix);
@@ -616,7 +616,7 @@ public static class plotter
             /*
             bool Ignored = false;
 
-            foreach (Coordinate pixelToCompare in IgnoredPixels)
+            foreach (Coordinate pixelToCompare in ignoredPixels)
             {
                 if (pixel.Compare(pixelToCompare))
                 {
@@ -628,7 +628,7 @@ public static class plotter
             */
             
             //sequence.Add(new Coordinate(pixel.X(), pixel.Y()));
-            //IgnoredPixels.Add(pix);
+            //ignoredPixels.Add(pix);
             pixel.X(pixel.X() + 1);
         }
         sequence.Add(new Coordinate(pixel.X()-1, pixel.Y()));
@@ -646,18 +646,18 @@ public static class plotter
             if (pixel.X() - 1 >= 0 && pixel.X() + 1 < bitmap.Width)
                 if (bitmap.GetPixel(newPixel.X(), newPixel.Y()) == Color.FromArgb(0, 255, 0))
                 {
-                    FindFillingSequence(newPixel, bitmap, sequence);
+                    findFillingSequence(newPixel, bitmap, sequence);
                 }
         }
         */
     }
 
-    internal static void Handshake()
+    internal static void handshake()
     {
         plotterAvailable = false;
         String[] HSI = new String[4];
         String HandshakeInfo;
-        if (OpenPort())
+        if (openPort())
         {
             //Send a handshake request
 
@@ -667,11 +667,11 @@ public static class plotter
                 plotterAvailable = true;
             if (plotterAvailable)
             {
-                //Request a plotter's name
+                //Request a PlotterFunctions's name
                 SP.Write("RName;");
                 HandshakeInfo = SP.ReadLine();
                 HSI[0] = HandshakeInfo;
-                //Request a plotter's working area dimentions
+                //Request a PlotterFunctions's working area dimentions
                 SP.Write("RSizeX;");
                 HandshakeInfo = SP.ReadLine();
                 HSI[1] = HandshakeInfo;
@@ -684,10 +684,10 @@ public static class plotter
                 HSI[3] = HandshakeInfo;
 
                 //dumping all the info from the string
-                PlotterName = HSI[0];
-                PsizeX = Int32.Parse(HSI[1]);
-                PsizeY = Int32.Parse(HSI[2]);
-                DownAngle = Int32.Parse(HSI[3]);
+                plotterName = HSI[0];
+                pSizeX = Int32.Parse(HSI[1]);
+                pSizeY = Int32.Parse(HSI[2]);
+                downAngle = Int32.Parse(HSI[3]);
             }
 
 
@@ -695,7 +695,7 @@ public static class plotter
         }
     }
 
-    internal static bool OpenPort()
+    internal static bool openPort()
     {
         try
         {

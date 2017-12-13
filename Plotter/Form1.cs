@@ -84,11 +84,11 @@ namespace Plotter
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            plotter.Loader(ConfigFileName);
-            SetNumerics();
-            plotter.ReloadCols();
-            plotter.Handshake();
-            label4.Text = plotter.PlotterName;
+            PlotterFunctions.loader(ConfigFileName);
+            setNumerics();
+            PlotterFunctions.reloadColours();
+            PlotterFunctions.handshake();
+            label4.Text = PlotterFunctions.plotterName;
             if (label4.Text.Equals ("Plotter Not Connected"))
                 label4.ForeColor = Color.FromArgb(255, 0, 0);
             else
@@ -98,9 +98,9 @@ namespace Plotter
         void ditheronthread2 ()
         {
             Bitmap bmpint = (Bitmap)pictureBox1.Image;
-            Bitmap bmpnew = plotter.dither(bmpint, bmpint.Width, bmpint.Height, plotter.compcol);
+            Bitmap bmpnew = PlotterFunctions.dither(bmpint, bmpint.Width, bmpint.Height, PlotterFunctions.compcol);
             pictureBox1.Image = bmpnew;
-            plotter.Dithered = true;
+            PlotterFunctions.dithered = true;
         }
         //
         private void ditherToolStripMenuItem_Click(object sender, EventArgs e)
@@ -108,7 +108,7 @@ namespace Plotter
             
             if (pictureBox1.Image != null)
             {
-                if (plotter.compcol.Count > 1)
+                if (PlotterFunctions.compcol.Count > 1)
                 {
                     Thread ditherThread = new Thread(new ThreadStart(ditheronthread2));
                     ditherThread.Start();
@@ -126,12 +126,12 @@ namespace Plotter
 
         void generateonT2()
         {
-            plotter.ColourMaps = plotter.GenerateColourMaps((Bitmap)pictureBox1.Image, plotter.compcol);
+            PlotterFunctions.colourMaps = PlotterFunctions.generateColourMaps((Bitmap)pictureBox1.Image, PlotterFunctions.compcol);
         }
 
         private void generateColourMapsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (plotter.Dithered)
+            if (PlotterFunctions.dithered)
             {
                 Thread Th2 = new Thread(new ThreadStart(generateonT2));
                 Th2.Start();
@@ -142,12 +142,12 @@ namespace Plotter
 
         void generatepatsonT2 ()
         {
-            plotter.PatternMaps = plotter.GeneratePatternMaps(plotter.ColourMaps);
+            PlotterFunctions.patternMaps = PlotterFunctions.generatePatternMaps(PlotterFunctions.colourMaps);
         }
 
         private void generatePatternMapsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (plotter.ColourMaps != null)
+            if (PlotterFunctions.colourMaps != null)
             {
                 Thread Th2 = new Thread(new ThreadStart(generatepatsonT2));
                 Th2.Start();
@@ -162,7 +162,7 @@ namespace Plotter
             FormLoadingcs loader = new FormLoadingcs(true, "Generating Pattern Sequences");
             loader.Show();
 
-            Thread generatorThread = new Thread(ActualGenerate,128*1024*1024);
+            Thread generatorThread = new Thread(actualGenerate,128*1024*1024);
                 generatorThread.Start();
                 while (generatorThread.ThreadState == ThreadState.Running)
                 {
@@ -172,21 +172,21 @@ namespace Plotter
             loader.Close();
         }
 
-        private void ActualGenerate()
+        private void actualGenerate()
         {
             
             
-            plotter.OutlineSequences = new List<List<Coordinate>>[(plotter.PatternMaps.Length / 2) - 1];
-            plotter.OutlineSequences = plotter.GenerateOutlineSequences(plotter.PatternMaps, this);
-            plotter.FillingSequences = new List<List<Coordinate>>[(plotter.PatternMaps.Length / 2) - 1];
-            plotter.FillingSequences = plotter.GenerateFillingSequences(plotter.PatternMaps);
+            PlotterFunctions.outlineSequences = new List<List<Coordinate>>[(PlotterFunctions.patternMaps.Length / 2) - 1];
+            PlotterFunctions.outlineSequences = PlotterFunctions.generateOutlineSequences(PlotterFunctions.patternMaps, this);
+            PlotterFunctions.fillingSequences = new List<List<Coordinate>>[(PlotterFunctions.patternMaps.Length / 2) - 1];
+            PlotterFunctions.fillingSequences = PlotterFunctions.generateFillingSequences(PlotterFunctions.patternMaps);
 
         }
 
         //
         private void generatePatternSequencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (plotter.PatternMaps != null)
+            if (PlotterFunctions.patternMaps != null)
             {
                 const int Size = 128 * 1024 * 1024;
                 Thread generateThread = new Thread(new ThreadStart(generateSeqOnthread), Size);
@@ -199,9 +199,9 @@ namespace Plotter
 
         private void printOutlinesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (plotter.OpenPort())
+            if (PlotterFunctions.openPort())
             {
-                plotter.SP.Write("PMode;");
+                PlotterFunctions.SP.Write("PMode;");
                 timer1.Enabled = true;
                 //SendOutlineInfo();
             }
@@ -228,7 +228,7 @@ namespace Plotter
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 pictureBox1.Image = new Bitmap(dlg.FileName);
-                plotter.Dithered = false;
+                PlotterFunctions.dithered = false;
             }
         }
 
@@ -255,14 +255,14 @@ namespace Plotter
 
         private void showColourMapsToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            if (plotter.ColourMaps != null)
+            if (PlotterFunctions.colourMaps != null)
             {
                 int count = 0;
-                foreach (Bitmap colmap in plotter.ColourMaps)
+                foreach (Bitmap colmap in PlotterFunctions.colourMaps)
                 {
                     FormColMap frmclmap = new FormColMap();
-                    if (plotter.Coloursinv.ContainsKey(plotter.compcol[count]))
-                        frmclmap.Text = plotter.Coloursinv[plotter.compcol[count]];
+                    if (PlotterFunctions.coloursInv.ContainsKey(PlotterFunctions.compcol[count]))
+                        frmclmap.Text = PlotterFunctions.coloursInv[PlotterFunctions.compcol[count]];
                     else
                         frmclmap.Text = "White";
                     frmclmap.ShowImage(colmap);
@@ -281,16 +281,16 @@ namespace Plotter
 
         private void previewEdgeAndFillingMapsToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            if (plotter.PatternMaps != null)
+            if (PlotterFunctions.patternMaps != null)
             {
-                for (int i = 0; i < ((plotter.PatternMaps.Length / 2)); i++)
+                for (int i = 0; i < ((PlotterFunctions.patternMaps.Length / 2)); i++)
                 {
                     FormColMap frmclmap = new FormColMap();
                     FormColMap frmclmap2 = new FormColMap();
-                    frmclmap.Text = plotter.Coloursinv[plotter.compcol[i]] + " Outline";
-                    frmclmap2.Text = plotter.Coloursinv[plotter.compcol[i]] + " Filling";
-                    frmclmap.ShowImage(plotter.PatternMaps[i, 0]);
-                    frmclmap2.ShowImage(plotter.PatternMaps[i, 1]);
+                    frmclmap.Text = PlotterFunctions.coloursInv[PlotterFunctions.compcol[i]] + " Outline";
+                    frmclmap2.Text = PlotterFunctions.coloursInv[PlotterFunctions.compcol[i]] + " Filling";
+                    frmclmap.ShowImage(PlotterFunctions.patternMaps[i, 0]);
+                    frmclmap2.ShowImage(PlotterFunctions.patternMaps[i, 1]);
                     frmclmap.Show();
                     frmclmap2.Show();
                 }
@@ -301,7 +301,7 @@ namespace Plotter
 
         private void manualControlModeToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            if (plotter.OpenPort())
+            if (PlotterFunctions.openPort())
             {
                 FormManualControl MC = new FormManualControl(this);
                 MC.Show();
@@ -310,8 +310,8 @@ namespace Plotter
 
         private void connectToPlotterToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            plotter.Handshake();
-            label4.Text = plotter.PlotterName;
+            PlotterFunctions.handshake();
+            label4.Text = PlotterFunctions.plotterName;
             if (label4.Text.Equals("Plotter Not Connected"))
                 label4.ForeColor = Color.FromArgb(255, 0, 0);
             else
@@ -320,24 +320,24 @@ namespace Plotter
         
         private void DiameterMain_ValueChanged(object sender, EventArgs e)
         {
-            plotter.Diameter = plotter.ChangeDiameter(DiameterMain.Value, DiameterDecimal.Value);
-            if (!plotter.SettingNumerics)
-                plotter.Saver(ConfigFileName);
+            PlotterFunctions.diameter = PlotterFunctions.changeDiameter(DiameterMain.Value, DiameterDecimal.Value);
+            if (!PlotterFunctions.settingNumerics)
+                PlotterFunctions.saver(ConfigFileName);
         }
 
         private void DiameterDecimal_ValueChanged(object sender, EventArgs e)
         {
-            plotter.Diameter = plotter.ChangeDiameter(DiameterMain.Value, DiameterDecimal.Value);
-            if (!plotter.SettingNumerics)
-                plotter.Saver(ConfigFileName);
+            PlotterFunctions.diameter = PlotterFunctions.changeDiameter(DiameterMain.Value, DiameterDecimal.Value);
+            if (!PlotterFunctions.settingNumerics)
+                PlotterFunctions.saver(ConfigFileName);
         }
 
 
-        internal void SetNumerics()
+        internal void setNumerics()
         {
             string[] splitfloat = new string[2];
-            plotter.SettingNumerics = true;
-            splitfloat = plotter.Diameter.ToString().Split('.');
+            PlotterFunctions.settingNumerics = true;
+            splitfloat = PlotterFunctions.diameter.ToString().Split('.');
             DiameterMain.Value = decimal.Parse(splitfloat[0]);
             if (splitfloat.Length > 1)
             {
@@ -355,12 +355,12 @@ namespace Plotter
             }
             else
                 DiameterDecimal.Value = 0;
-            plotter.SettingNumerics = false;
+            PlotterFunctions.settingNumerics = false;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            plotter.SendPrintingInfo(this);
+            PlotterFunctions.sendPrintingInfo(this);
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -372,23 +372,23 @@ namespace Plotter
         private void halpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             StreamWriter sht = new StreamWriter("out.txt");
-            for (int i = 0; i < plotter.OutlineSequences.Length; i++)
+            for (int i = 0; i < PlotterFunctions.outlineSequences.Length; i++)
             {
-                for (int j = 0; j < plotter.OutlineSequences[i].Count; j++)
+                for (int j = 0; j < PlotterFunctions.outlineSequences[i].Count; j++)
                 {
-                    for (int k = 0; k < plotter.OutlineSequences[i][j].Count; k++)
+                    for (int k = 0; k < PlotterFunctions.outlineSequences[i][j].Count; k++)
                     {
-                        sht.Write(plotter.OutlineSequences[i][j][k].X() + "," + plotter.OutlineSequences[i][j][k].Y() + ";");
+                        sht.Write(PlotterFunctions.outlineSequences[i][j][k].X() + "," + PlotterFunctions.outlineSequences[i][j][k].Y() + ";");
                     }
                 }
             }
-            for (int i = 0; i < plotter.FillingSequences.Length; i++)
+            for (int i = 0; i < PlotterFunctions.fillingSequences.Length; i++)
             {
-                for (int j = 0; j < plotter.FillingSequences[i].Count; j++)
+                for (int j = 0; j < PlotterFunctions.fillingSequences[i].Count; j++)
                 {
-                    for (int k = 0; k < plotter.FillingSequences[i][j].Count; k++)
+                    for (int k = 0; k < PlotterFunctions.fillingSequences[i][j].Count; k++)
                     {
-                        sht.Write(plotter.FillingSequences[i][j][k].X() + "," + plotter.FillingSequences[i][j][k].Y() + ";");
+                        sht.Write(PlotterFunctions.fillingSequences[i][j][k].X() + "," + PlotterFunctions.fillingSequences[i][j][k].Y() + ";");
                     }
                 }
             }
@@ -405,7 +405,7 @@ namespace Plotter
                 SP.Write("PMode;");
                 for (int h = 0; h < compcol.Count - 1; h++)
                 {
-                    if (MessageBox.Show("Please insert pen with colour " + Coloursinv[compcol[h]], "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information) = DialogResult.OK)
+                    if (MessageBox.Show("Please insert pen with colour " + coloursInv[compcol[h]], "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information) = DialogResult.OK)
                     for (int i = 0; i < Sequences[0].Count; i++)
                     {
                         for (int j = 0; j < Sequences[0][i].Count; j++)
