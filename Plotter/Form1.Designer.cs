@@ -245,7 +245,7 @@
             this.DiameterMain.Name = "DiameterMain";
             this.DiameterMain.Size = new System.Drawing.Size(28, 20);
             this.DiameterMain.TabIndex = 5;
-            this.DiameterMain.ValueChanged += new System.EventHandler(this.DiameterMain_ValueChanged);
+            this.DiameterMain.ValueChanged += new System.EventHandler(this.diameterMain_ValueChanged);
             // 
             // label1
             // 
@@ -270,7 +270,7 @@
             this.DiameterDecimal.Name = "DiameterDecimal";
             this.DiameterDecimal.Size = new System.Drawing.Size(32, 20);
             this.DiameterDecimal.TabIndex = 7;
-            this.DiameterDecimal.ValueChanged += new System.EventHandler(this.DiameterDecimal_ValueChanged);
+            this.DiameterDecimal.ValueChanged += new System.EventHandler(this.diameterDecimal_ValueChanged);
             // 
             // label2
             // 
@@ -343,7 +343,7 @@
             this.MinimumSize = new System.Drawing.Size(386, 356);
             this.Name = "Form1";
             this.Text = "Plotter";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DiameterMain)).EndInit();

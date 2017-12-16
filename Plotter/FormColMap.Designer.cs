@@ -75,7 +75,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormColMap";
             this.Text = "FormColMap";
-            this.Load += new System.EventHandler(this.FormColMap_Load);
+            this.Load += new System.EventHandler(this.formColMap_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

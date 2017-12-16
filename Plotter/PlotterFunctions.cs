@@ -287,7 +287,7 @@ public static class PlotterFunctions
                 frmldgn.Text = "Generating Outline - " + coloursInv[compcol[i]] + " (" + (counter) + "/" + ((compcol.Count - 1) * 2) + ")";
 
             //call an outlining method on the first bitmap, specify colour
-            Outline = FindOutline(Color.FromArgb(255, 0, 0), bmp, frmldgn);
+            Outline = findOutline(Color.FromArgb(255, 0, 0), bmp, frmldgn);
             //call a filling method on the second bitmap, specify colour
             counter++;
             if (i < compcol.Count - 1)
@@ -302,7 +302,7 @@ public static class PlotterFunctions
         return Patterns;
     }
 
-    internal static Bitmap FindOutline(Color colour, Bitmap MaptoCheck, FormLoadingcs frmldgn)
+    internal static Bitmap findOutline(Color colour, Bitmap MaptoCheck, FormLoadingcs frmldgn)
     {
         //create a list of coordinates to ignore
         Bitmap linmap = new Bitmap(MaptoCheck.Width, MaptoCheck.Height, PixelFormat.Format24bppRgb);
@@ -400,7 +400,7 @@ public static class PlotterFunctions
                     Coordinate pixel = new Coordinate(i, j);
                     foreach (Coordinate pixelToCompare in ignoredPixels)
                     {
-                        if (pixel.Compare(pixelToCompare))
+                        if (pixel.compare(pixelToCompare))
                         {
                             Ignored = true;
                             break;
@@ -426,7 +426,7 @@ public static class PlotterFunctions
 
         foreach (Coordinate pixelToCompare in ignoredPixels)
         {
-            if (pixel.Compare(pixelToCompare))
+            if (pixel.compare(pixelToCompare))
             {
                 Ignored = true;
                 break;

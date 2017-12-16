@@ -82,7 +82,7 @@ namespace Plotter
 
 
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void form1_Load(object sender, EventArgs e)
         {
             PlotterFunctions.loader(ConfigFileName);
             setNumerics();
@@ -234,10 +234,12 @@ namespace Plotter
 
         private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.Title = "Save Plot";
-            dlg.Filter = "Plot file (*.plt)|*.plt|bmp file (*.bmp)|*.bmp|jpg file (*.jpg)|*.jpg|png file (*.png)|*.png";
-            dlg.AddExtension = true;
+            SaveFileDialog dlg = new SaveFileDialog
+            {
+                Title = "Save Plot",
+                Filter = "Plot file (*.plt)|*.plt|bmp file (*.bmp)|*.bmp|jpg file (*.jpg)|*.jpg|png file (*.png)|*.png",
+                AddExtension = true
+            };
             //nothing here... :\
             if (dlg.ShowDialog() == DialogResult.OK)
             {
@@ -261,7 +263,7 @@ namespace Plotter
                         frmclmap.Text = PlotterFunctions.coloursInv[PlotterFunctions.compcol[count]];
                     else
                         frmclmap.Text = "White";
-                    frmclmap.ShowImage(colmap);
+                    frmclmap.showImage(colmap);
                     frmclmap.Show();
                     count++;
                 }
@@ -281,8 +283,8 @@ namespace Plotter
                     FormColMap frmclmap2 = new FormColMap();
                     frmclmap.Text = PlotterFunctions.coloursInv[PlotterFunctions.compcol[i]] + " Outline";
                     frmclmap2.Text = PlotterFunctions.coloursInv[PlotterFunctions.compcol[i]] + " Filling";
-                    frmclmap.ShowImage(PlotterFunctions.patternMaps[i, 0]);
-                    frmclmap2.ShowImage(PlotterFunctions.patternMaps[i, 1]);
+                    frmclmap.showImage(PlotterFunctions.patternMaps[i, 0]);
+                    frmclmap2.showImage(PlotterFunctions.patternMaps[i, 1]);
                     frmclmap.Show();
                     frmclmap2.Show();
                 }
@@ -310,14 +312,14 @@ namespace Plotter
                 label4.ForeColor = Color.FromArgb(0, 128, 32);
         }
         
-        private void DiameterMain_ValueChanged(object sender, EventArgs e)
+        private void diameterMain_ValueChanged(object sender, EventArgs e)
         {
             PlotterFunctions.diameter = PlotterFunctions.changeDiameter(DiameterMain.Value, DiameterDecimal.Value);
             if (!PlotterFunctions.settingNumerics)
                 PlotterFunctions.saver(ConfigFileName);
         }
 
-        private void DiameterDecimal_ValueChanged(object sender, EventArgs e)
+        private void diameterDecimal_ValueChanged(object sender, EventArgs e)
         {
             PlotterFunctions.diameter = PlotterFunctions.changeDiameter(DiameterMain.Value, DiameterDecimal.Value);
             if (!PlotterFunctions.settingNumerics)

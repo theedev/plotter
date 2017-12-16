@@ -17,12 +17,12 @@ namespace Plotter
             InitializeComponent();
         }
 
-        private void FormColMap_Load(object sender, EventArgs e)
+        private void formColMap_Load(object sender, EventArgs e)
         {
 
         }
 
-        public void ShowImage(Bitmap pic)
+        public void showImage(Bitmap pic)
         {
             pictureBox1.Image = pic;
         }
@@ -52,10 +52,12 @@ namespace Plotter
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog dlg = new SaveFileDialog();
-            dlg.Title = "Export";
-            dlg.Filter = "bmp file (*.bmp)|*.bmp|jpg file (*.jpg)|*.jpg|png file (*.png)|*.png";
-            dlg.AddExtension = true;
+            SaveFileDialog dlg = new SaveFileDialog
+            {
+                Title = "Export",
+                Filter = "bmp file (*.bmp)|*.bmp|jpg file (*.jpg)|*.jpg|png file (*.png)|*.png",
+                AddExtension = true
+            };
             //nothing here... :\
             if (dlg.ShowDialog() == DialogResult.OK)
             {

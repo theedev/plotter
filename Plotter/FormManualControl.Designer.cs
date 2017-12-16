@@ -109,7 +109,7 @@
             this.MinimumSize = new System.Drawing.Size(276, 294);
             this.Name = "FormManualControl";
             this.Text = "FormManualControl";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormManualControl_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formManualControl_FormClosing);
             this.ResumeLayout(false);
 
         }

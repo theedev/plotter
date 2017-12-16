@@ -80,7 +80,7 @@ namespace Plotter
             SP.Close();
         }
 
-        private void FormManualControl_FormClosing(object sender, FormClosingEventArgs e)
+        private void formManualControl_FormClosing(object sender, FormClosingEventArgs e)
         {
             SP.Open();
             SP.Write("MCoff;");

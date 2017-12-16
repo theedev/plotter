@@ -39,7 +39,7 @@ namespace Plotter
             y = yy;
         }
 
-        public bool Compare (Coordinate pixelToCompare)
+        public bool compare (Coordinate pixelToCompare)
         {
             if (pixelToCompare.X() == this.x && pixelToCompare.Y() == this.y)
             {

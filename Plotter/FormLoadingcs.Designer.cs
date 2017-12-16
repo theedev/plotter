@@ -52,7 +52,7 @@
             this.Name = "FormLoadingcs";
             this.ShowInTaskbar = false;
             this.Text = "Dithering";
-            this.Load += new System.EventHandler(this.FormLoadingcs_Load);
+            this.Load += new System.EventHandler(this.formLoadingcs_Load);
             this.ResumeLayout(false);
 
         }

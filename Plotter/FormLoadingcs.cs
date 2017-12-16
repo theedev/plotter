@@ -31,7 +31,7 @@ namespace Plotter
             }
         }
 
-        private void FormLoadingcs_Load(object sender, EventArgs e)
+        private void formLoadingcs_Load(object sender, EventArgs e)
         {
 
         }

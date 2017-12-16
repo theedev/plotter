@@ -18,7 +18,7 @@ namespace Plotter
             InitializeComponent();
         }
 
-        private void FormColour_Load(object sender, EventArgs e)
+        private void formColour_Load(object sender, EventArgs e)
         {
             loadList();
         }

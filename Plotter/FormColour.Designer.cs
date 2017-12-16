@@ -94,7 +94,7 @@
             this.MinimizeBox = false;
             this.Name = "FormColour";
             this.Text = "Edit Colours";
-            this.Load += new System.EventHandler(this.FormColour_Load);
+            this.Load += new System.EventHandler(this.formColour_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
