@@ -1,1 +1,0 @@
-D:\Library\Projects\Other\Plotter\Plotter\plotterlib\obj\Debug\plotterlib.csproj.CoreCompileInputs.cache
