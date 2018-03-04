@@ -58,6 +58,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.printingScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DiameterMain)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DiameterDecimal)).BeginInit();
@@ -75,9 +76,10 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(370, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(459, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
             // 
             // fileToolStripMenuItem
             // 
@@ -192,10 +194,11 @@
             this.printingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.printOutlinesToolStripMenuItem,
             this.manualControlModeToolStripMenuItem,
-            this.connectToPlotterToolStripMenuItem});
+            this.connectToPlotterToolStripMenuItem,
+            this.printingScreenToolStripMenuItem});
             this.printingToolStripMenuItem.Name = "printingToolStripMenuItem";
-            this.printingToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.printingToolStripMenuItem.Text = "Printing";
+            this.printingToolStripMenuItem.Size = new System.Drawing.Size(98, 20);
+            this.printingToolStripMenuItem.Text = "Printing screen";
             // 
             // printOutlinesToolStripMenuItem
             // 
@@ -236,7 +239,7 @@
             // DiameterMain
             // 
             this.DiameterMain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DiameterMain.Location = new System.Drawing.Point(95, 295);
+            this.DiameterMain.Location = new System.Drawing.Point(95, 384);
             this.DiameterMain.Maximum = new decimal(new int[] {
             9,
             0,
@@ -252,7 +255,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(117, 288);
+            this.label1.Location = new System.Drawing.Point(117, 377);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(20, 29);
             this.label1.TabIndex = 6;
@@ -261,7 +264,7 @@
             // DiameterDecimal
             // 
             this.DiameterDecimal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DiameterDecimal.Location = new System.Drawing.Point(129, 295);
+            this.DiameterDecimal.Location = new System.Drawing.Point(129, 384);
             this.DiameterDecimal.Maximum = new decimal(new int[] {
             99,
             0,
@@ -276,7 +279,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 297);
+            this.label2.Location = new System.Drawing.Point(3, 386);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(86, 13);
             this.label2.TabIndex = 8;
@@ -287,7 +290,7 @@
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.label3.Location = new System.Drawing.Point(160, 297);
+            this.label3.Location = new System.Drawing.Point(160, 386);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(37, 20);
             this.label3.TabIndex = 9;
@@ -300,10 +303,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Location = new System.Drawing.Point(6, 27);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(352, 262);
+            this.pictureBox1.Size = new System.Drawing.Size(441, 351);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             this.pictureBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.pictureBox1_DragDrop);
             this.pictureBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.pictureBox1_DragEnter);
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
@@ -313,7 +317,7 @@
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.Color.Black;
-            this.label4.Location = new System.Drawing.Point(249, 297);
+            this.label4.Location = new System.Drawing.Point(338, 386);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(109, 13);
             this.label4.TabIndex = 14;
@@ -324,12 +328,19 @@
             this.timer1.Interval = 40;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // printingScreenToolStripMenuItem
+            // 
+            this.printingScreenToolStripMenuItem.Name = "printingScreenToolStripMenuItem";
+            this.printingScreenToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.printingScreenToolStripMenuItem.Text = "Printing Screen";
+            this.printingScreenToolStripMenuItem.Click += new System.EventHandler(this.printingScreenToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(370, 317);
+            this.ClientSize = new System.Drawing.Size(459, 406);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.DiameterDecimal);
             this.Controls.Add(this.label3);
@@ -385,6 +396,7 @@
         internal System.Windows.Forms.NumericUpDown DiameterDecimal;
         internal System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ToolStripMenuItem halpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem printingScreenToolStripMenuItem;
     }
 }
 

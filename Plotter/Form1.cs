@@ -383,5 +383,26 @@ namespace Plotter
             }
             sht.Close();
         }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void toolStripTextBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void printingScreenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormPrint frmprnt = new FormPrint();
+            frmprnt.Show();
+        }
     }
 }
